@@ -1,199 +1,205 @@
-root {
-      --primary-color: #f7941d;
-      --text-color: #333;
-      --secondary-text: #666;
-      --bg-color: #fef8f4;
-      --card-bg: #fff;
-      --btn-bg: #e9ecef;
-      --btn-text: #adb5bd;
-      --border-radius: 20px;
-     }
-
-    
-    body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+* {
     margin: 0;
     padding: 0;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-       
-    }
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
 
-    .container {
-    width: 100%;
-    max-width: 1200px;
-    padding: 40px;
+body {
+    background: #f4f6f9;
+}
+
+/* SECTION */
+.install-section {
+    padding: 100px 8%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Diagonal background pattern */
+.install-section::before {
+    content: "";
+    position: absolute;
+    right: -200px;
+    top: -200px;
+    width: 600px;
+    height: 600px;
+    background: linear-gradient(135deg, #ff8c42, #ffb27a);
+    transform: rotate(25deg);
+    border-radius: 40%;
+    opacity: 0.08;
+}
+
+.install-container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 60px;
+}
+
+/* LEFT SIDE */
+.install-left {
+    flex: 1;
+}
+
+.badge {
+    font-size: 14px;
+    color: #ff6b35;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.install-left h1 {
+    font-size: 52px;
+    margin: 15px 0;
+    color: #0f172a;
+}
+
+.install-left h1 span {
+    color: #ff8c42;
+}
+
+.description {
+    color: #6b7280;
+    max-width: 500px;
+    margin-bottom: 40px;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.feature-card {
+    display: flex;
     align-items: flex-start;
-       
-     }
-
-    .content {
-    flex: 1;
-    padding-right: 40px;
-    }
-
-    .header-top {
-    color: red;
-    font-size: 14px;
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-bottom: 10px;
-    }
-
-    .title {
-    font-size: 48px;
-    font-weight: bold;
-     margin-bottom: 20px;
-    }
-
-    .title span {
-     color: var(--primary-color);
-    }
-
-    .description {
-    color: var(--secondary-text);
-    margin-bottom: 30px;
-    line-height: 1.6;
-    }
-
-    .description b {
-    font-weight: bold;
-    }
-
-    .feature-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    }
-
-    .feature-icon-wrapper {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    margin-right: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    }
-
-    .feature-item:nth-child(3) .feature-icon-wrapper {
-    background-color: #fbeed9;
-    }
-
-    .feature-item:nth-child(4) .feature-icon-wrapper {
-    background-color: #fcebeb;
-    }
-
-    .feature-item:nth-child(5) .feature-icon-wrapper {
-    background-color: #e9f0fe;
-    }
-
-    .feature-item svg {
-     width: 20px;
-    height: 20px;
-    }
-
-    .feature-text {
-    flex: 1;
-    }
-
-    .feature-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    }
-
-    .feature-description {
-    font-size: 14px;
-    color: var(--secondary-text);
-    }
-
-    .install-card {
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    width: 400px;
-    text-align: center;
-    }
-
-    .card-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    }
-
-    .card-subtitle {
-    font-size: 14px;
-    color: var(--secondary-text);
-    margin-bottom: 30px;
-    }
-
-    .os-options {
-    display: flex;
-    justify-content: center;
     gap: 15px;
-    margin-bottom: 30px;
-    }
+}
 
-    .os-item {
-    text-align: center;
-    cursor: pointer;
-    width: 70px;
-    }
+.feature-card h3 {
+    color: #0f172a;
+    margin-bottom: 5px;
+}
 
-    .os-icon-wrapper {
-    width: 70px;
-    height: 70px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+.feature-card p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* ICON COLORS */
+.icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+.orange { background: #ff8c42; }
+.red { background: #ff4d6d; }
+.blue { background: #3b82f6; }
+
+/* RIGHT SIDE */
+.install-right {
+    flex: 1;
+    position: relative;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 5px;
-    transition: all 0.3s ease;
-    }
+}
 
-    .os-item:hover .os-icon-wrapper {
-    border-color: var(--primary-color);
-    }
+/* Floating rotating ring */
+.floating-ring {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border: 2px dashed rgba(255, 140, 66, 0.3);
+    border-radius: 50%;
+    animation: rotateRing 18s linear infinite;
+}
 
-    .os-item.selected .os-icon-wrapper {
-    border-color: var(--primary-color);
-    background-color: #fff9f0;
-    }
+/* INSTALL CARD */
+.device-card {
+    background: white;
+    padding: 40px;
+    width: 380px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 2;
+    animation: floatCard 6s ease-in-out infinite;
+}
 
-    .os-icon-wrapper svg {
-     width: 30px;
-    height: 30px;
-    }
+.device-card h2 {
+    color: #0f172a;
+}
 
-    .os-name {
-     font-size: 12px;
-    color: var(--text-color);
-    }
+.device-card p {
+    color: #6b7280;
+    margin-bottom: 25px;
+}
 
-    #select-device-btn {
-    background-color: var(--btn-bg);
-    color: var(--btn-text);
-    border: none;
-    padding: 15px;
-    width: 100%;
+/* DEVICE GRID */
+.device-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.device-btn {
+    padding: 10px;
     border-radius: 10px;
-    font-size: 16px;
-    font-weight: bold;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    }
+    transition: all 0.3s ease;
+}
 
-    #select-device-btn.enabled {
-    background-color: var(--primary-color);
+.device-btn:hover {
+    background: #ff8c42;
     color: white;
+    border-color: #ff8c42;
+}
+
+/* INSTALL BUTTON */
+.install-btn {
+    width: 100%;
+    padding: 12px;
+    background: #0f172a;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.install-btn:hover {
+    background: #ff8c42;
+}
+
+/* ANIMATIONS */
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes rotateRing {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media(max-width: 900px) {
+    .install-container {
+        flex-direction: column;
+        text-align: center;
     }
 
+    .install-left h1 {
+        font-size: 40px;
+    }
+
+    .features {
+        align-items: center;
+    }
+}
