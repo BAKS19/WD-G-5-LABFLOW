@@ -1,0 +1,249 @@
+/* General Reset & Layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: #f9fafb;
+    background-image: radial-gradient(circle at top left, rgba(249, 115, 22, 0.04), transparent 35%);
+    color: #1f2937;
+    min-height: 100vh;
+}
+
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    background-color: #111827;
+    color: #ffffff;
+    display: none; /* Hidden on mobile */
+}
+
+@media (min-width: 768px) {
+    .sidebar { display: block; }
+}
+
+.sidebar-logo {
+    padding: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-bottom: 1px solid #1f2937;
+}
+
+.sidebar-nav {
+    margin-top: 1.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: #9ca3af;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.nav-link.active {
+    background-color: #f97316;
+    color: #ffffff;
+}
+
+.nav-link:hover:not(.active) {
+    color: #ffffff;
+    background-color: #1f2937;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevents flex children from forcing width beyond viewport */
+    overflow-x: hidden; /* Hides any accidental horizontal bleed */
+}
+
+/* Glass Header */
+.glass-header {
+    height: 64px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    background-color: #f97316;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dashboard Body */
+.container {
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 3rem;
+}
+
+.page-header h2 {
+    font-size: 1.875rem;
+    color: #111827;
+}
+
+.page-header p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+/* KPI Cards */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); /* Uses min() to prevent overflow on very small mobile screens */
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.kpi-card {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    border-color: #f97316;
+    box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.1);
+}
+
+.kpi-card.active-card {
+    border-color: #f97316;
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.4);
+}
+
+.icon-wrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.icon-orange { color: #f97316; }
+.icon-amber { color: #f59e0b; }
+
+.kpi-value {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: #111827;
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Charts & Containers */
+.visual-analytics {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.graph-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .graph-row-mixed {
+        grid-template-columns: repeat(10, 1fr);
+    }
+    .col-3 { grid-column: span 3; }
+    .col-7 { grid-column: span 7; }
+    .graph-row-half {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.chart-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    min-width: 0; /* Allows the grid item to shrink, forcing the chart to resize proportionally */
+}
+
+.chart-card h3 {
+    font-size: 1.125rem;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.chart-card p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+}
+
+.chart-height-lg { 
+    position: relative;
+    height: 384px; 
+    width: 100%;
+    max-width: 100%;
+}
+.chart-height-md { 
+    position: relative;
+    height: 288px; 
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Animations */
+.animate-reveal {
+    animation: reveal 0.6s ease-out forwards;
+}
+
+@keyframes reveal {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
