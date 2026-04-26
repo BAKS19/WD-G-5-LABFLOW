@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Clearance Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <header class="topbar">
+        <div class="left">
+            <button id="sidebarToggle" class="icon-btn" title="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div>
+                <nav class="breadcrumb">
+                    <span>Clearance Hub</span>
+                </nav>
+                <p class="subtext">CSM Laboratory</p>
+            </div>
+        </div>
+
+        <div class="right">
+
+            <div class="icon-btn notification">
+                <i class="fas fa-bell"></i>
+                <span class="dot"></span>
+            </div>
+
+            <div class="icon-btn cart">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartCount" class="badge">0</span>
+            </div>
+
+            <div class="profile">
+                <div class="info">
+                    <p class="name">Admin User</p>
+                    <p class="role">Admin</p>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=f97316&color=fff">
+            </div>
+
+        </div>
+    </header>
+
+    <main class="main">
+
+        <div class="title">
+            <h2>Student <span>Clearance Hub.</span></h2>
+            <p>Verify student liabilities and clearance status.</p>
+        </div>
+
+        <div class="search-box">
+            <form id="searchForm">
+                <div class="input-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="search" placeholder="Enter Student ID Number...">
+                </div>
+                <button type="submit" class="btn-dark">Search</button>
+                <button type="button" id="scanBtn" class="btn-orange">
+                    <i class="fas fa-qrcode"></i>
+                </button>
+            </form>
+        </div>
+
+        <div id="cameraView" class="camera hidden">
+            <div class="camera-header">
+                <h3>Scan Student ID or Clearance Slip</h3>
+                <button id="cancelScan">Cancel Scan</button>
+            </div>
+            <div class="qr-box">
+                <div class="qr-guide"></div>
+                <div class="laser"></div>
+            </div>
+            <p id="scanResult"></p>
+        </div>
+
+        <div class="results">
+            <i class="fas fa-user-check"></i>
+            <h3>Awaiting Student Search</h3>
+            <p>Use the search bar or QR scanner to look up a student.</p>
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>
