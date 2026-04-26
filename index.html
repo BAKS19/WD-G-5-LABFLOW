@@ -9,7 +9,64 @@
     </head>
 
     <body>
-        
+
+        <div id="ctaModal" class="modal">
+            <div class="modal-overlay" id="overlay"></div>
+
+            <div class="modal-box">
+
+                <button class="close-btn" id="closeBtn">✕</button>
+
+                <div id="id-modal">
+                    <div class="icon-wrap">
+                    👤            
+                    </div>
+
+                    <div class="text-center">
+                        <h3>E-LIMS Gatekeeper</h3>
+                        <p>Please verify your identity.</p>
+                    </div>
+
+                    <form id="verifyForm" class="form">
+                        <label for="id_number">ID Number</label>
+                        <input type="text" id="id_number" placeholder="e.g. 2024-001">
+                        <p id="idError" class="error"></p>
+
+                        <button type="submit" class="verify-btn">Verify Identity</button>
+                    </form>
+                </div>
+
+            
+                <div class="hidden" id="pass-modal">
+                    <div class="icon-wrap">
+                    🔐
+                    </div>
+
+                    <div class="text-center">
+                        <h3>Welcome Back</h3>
+                        <p>Login as <strong id="roleLabel">User</strong></p>            </div>
+
+                    <form id="adminLoginForm" class="form">
+
+                        <label for="password">Password</label>
+
+                        <div class="password-field">
+                            <input type="password" id="password" placeholder="Enter password">
+                            <span id="togglePassword" class="eye">👁</span>                
+                        </div>
+                        <p id="passError" class="error"></p>
+
+                        <button type="submit" class="verify-btn">Access Dashboard</button>
+                        
+                        <a href="" id="switchAccount" class="switch-account" >Not you? Switch account</a>
+                    </form>      
+                </div>
+
+                <div class="status">
+                    ✅ System Pulse: Online
+                </div>
+            </div>
+        </div>
 
         <div class="navbar">
             <nav class="nav">
@@ -30,7 +87,7 @@
                     <a href="#why">Benefits</a>
                     <a href="#install">Install App</a>
                 </div>
-                <a href="#login" class="start-btn">Get Started</a>
+                <a class="start-btn" id="openBtn">Get Started</a>
             </nav>
         </div>
 
@@ -116,11 +173,11 @@
 
                             <div class="indicator" id="indicator"></div>
 
-                            <button class="tab active">Account Setup</button>
-                            <button class="tab">Group Activity</button>
-                            <button class="tab">Individual</button>
-                            <button class="tab">Direct Borrow</button>
-                            <button class="tab">Damage Return</button>
+                            <button class="tab active" onclick="switchTab('account-setup')">Account Setup</button>
+                            <button class="tab" onclick="switchTab('group')">Group Activity</button>
+                            <button class="tab" onclick="switchTab('individual')">Individual</button>
+                            <button class="tab" onclick="switchTab('borrow')">Direct Borrow</button>
+                            <button class="tab" onclick="switchTab('damage')">Damage Return</button>
 
                         </div>
                     </div>
@@ -519,5 +576,6 @@
             </div>
         </footer>
         
+        <script src="assets/JS/hero.js"></script>
     </body>
 </html>
