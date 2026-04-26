@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Activity</title>
+    <style>
+        
+        :root {
+            --primary-orange: #ff7a18;
+            --primary-blue: #4f46e5;
+            --primary-purple: #6366f1;
+            --success-green: #22c55e;
+            --bg-color: #f4f7f9;
+            --text-dark: #2c3e50;
+            --text-muted: #718096;
+            --border-color: #e1e8ed;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0; 
+            padding: 40px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+        .content-wrapper { display: flex; gap: 30px; margin-top: 30px; }
+        .flex-between { display: flex; justify-content: space-between; width: 100%; }
+
+       
+        .stepper {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+
+        .step { padding-bottom: 15px; color: #95a5a6; font-weight: bold; cursor: default; }
+        .step span { font-size: 0.8rem; }
+        .step.active {
+            color: var(--text-dark);
+            border-bottom: 3px solid var(--primary-orange);
+        }
+
+        .form-step { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        
+        .form-card {
+            flex: 2;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0 20px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .upload-box {
+            border: 2px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: #4a5568;
+            cursor: pointer;
+            background: #f8fbff;
+        }
+
+        .next-btn {
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        
+        .step-header { display: flex; justify-content: space-between; align-items: center; }
+        .ai-suggest-btn {
+            background: var(--primary-purple);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .search-container { display: flex; gap: 15px; margin: 20px 0; }
+        .search-input-wrapper { flex: 1; position: relative; display: flex; align-items: center; }
+        .search-icon { position: absolute; left: 15px; color: #a0aec0; }
+        #equipmentSearch { padding-left: 45px; margin: 0; }
+        .filter-btn {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .item-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .item-card img { width: 60px; height: 60px; object-fit: contain; }
+        .item-card.selected { border: 2px solid #fed7aa; background-color: #fffaf0; }
+
+        .prev-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+       
+        .mode-section { background-color: #f0f4ff; padding: 20px; border-radius: 15px; margin-top: 20px; }
+        .label-bold { font-weight: bold; display: block; margin-bottom: 10px; color: #2d3748; }
+        .label-small-bold { font-size: 0.75rem; font-weight: bold; color: #95a5a6; margin-bottom: 5px; display: block; }
+        .label-small-blue { color: var(--primary-purple); font-weight: bold; font-size: 0.8rem; display: block;}
+        .toggle-group { display: flex; background: white; padding: 5px; border-radius: 10px; gap: 5px; }
+        .toggle-btn {
+            flex: 1; padding: 12px; border: none; background: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; color: var(--text-muted);
+        }
+        .toggle-btn.active { background-color: var(--primary-blue); color: white; }
+        .group-preview-box { border: 1px solid #e2e8f0; border-radius: 15px; padding: 40px; text-align: center; color: #a0aec0; margin-top: 20px; }
+        .publish-btn {
+            background-color: var(--success-green);
+            color: white; border: none; padding: 15px 40px;
+            border-radius: 12px; font-weight: bold; cursor: pointer;
+        }
+
+        
+        .preview-card {
+            flex: 1; background: white; border-radius: 20px;
+            padding: 20px; border: 1px solid var(--border-color);
+            align-self: flex-start; position: sticky; top: 20px;
+        }
+        .preview-tabs { display: flex; background: #edf2f7; border-radius: 10px; padding: 5px; margin-bottom: 20px; }
+        .preview-tabs button { flex: 1; border: none; background: none; padding: 8px; font-weight: 600; cursor: pointer; }
+        .preview-tabs button.active { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .pdf-placeholder { background: #f8fafc; height: 150px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #cbd5e0; font-weight: bold; margin-bottom: 20px; }
+        .label-small { font-size: 0.7rem; font-weight: bold; color: var(--primary-blue); text-transform: uppercase; margin-bottom: 5px;}
+        .preview-desc-box { min-height: 80px; color: var(--text-muted); font-size: 0.9rem; margin: 15px 0;}
+        .deadline-footer { border-top: 1px solid var(--border-color); padding-top: 15px; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Create New Activity<span>.</span></h1>
+            <p>Build and configure a new lab activity for your classes.</p>
+        </header>
+
+        <main class="content-wrapper">
+            <section class="form-card">
+                <nav class="stepper">
+                    <div class="step active" id="stepIndicator1"><span>Step 1</span><br>Resources</div>
+                    <div class="step" id="stepIndicator2"><span>Step 2</span><br>Logistics</div>
+                    <div class="step" id="stepIndicator3"><span>Step 3</span><br>Settings</div>
+                </nav>
+
+                <div class="form-step active" id="step1">
+                    <div class="form-body">
+                        <h2>1. Resources</h2>
+                        <p class="subtitle">Provide the basic details and reference materials for the activity.</p>
+                        
+                        <input type="text" id="titleInput" placeholder="Activity Title">
+                        <textarea id="descInput" placeholder="Instructions..." rows="6"></textarea>
+                        
+                        <label>Activity Deadline</label>
+                        <input type="datetime-local" id="dateInput">
+
+                        <div class="upload-box">
+                            <p>📄 Upload PDF Manual</p>
+                        </div>
+
+                        <div class="btn-container">
+                            <button class="next-btn" onclick="showStep(2)">NEXT →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" id="step2" style="display: none;">
+                    <div class="form-body">
+                        <div class="step-header">
+                            <h2>2. Logistics</h2>
+                            <button class="ai-suggest-btn">Suggest with AI</button>
+                        </div>
+                        <p class="subtitle">Select the required apparatus and materials for this activity.</p>
+
+                        <div class="search-container">
+                            <div class="search-input-wrapper">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="equipmentSearch" placeholder="Search items by name...">
+                            </div>
+                            <button class="filter-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                            </button>
+                        </div>
+
+                        <div class="equipment-grid" id="equipmentGrid"></div>
+
+                        <div class="btn-container flex-between">
+                            <button class="prev-btn" onclick="showStep(1)">← PREVIOUS</button>
+                            <button class="next-btn" onclick="showStep(3)">NEXT →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" id="step3" style="display: none;">
+                    <div class="form-body">
+                        <h2>3. Settings & Assignments</h2>
+                        <p class="subtitle">Define workflow logic and assign to classes.</p>
+
+                        <div class="field-container">
+                            <label class="label-small-bold">ASSIGN CLASSES</label>
+                            <div class="class-selector-box">
+                                <input type="text" placeholder="Select classes...">
+                            </div>
+                        </div>
+
+                        <div class="mode-section">
+                            <label class="label-bold">Mode</label>
+                            <div class="toggle-group">
+                                <button type="button" class="toggle-btn active" id="modeIndividual" onclick="setMode('individual')">INDIVIDUAL</button>
+                                <button type="button" class="toggle-btn" id="modeGroup" onclick="setMode('group')">GROUP</button>
+                            </div>
+                        </div>
+
+                        <div id="groupSettings" style="display: none; margin-top: 20px;">
+                            <div class="field-container">
+                                <label class="label-small-blue">STRATEGY</label>
+                                <select id="strategySelect">
+                                    <option value="smart">Smart Auto-Assign</option>
+                                    <option value="manual">Teacher Selects (Manual)</option>
+                                    <option value="choice">Student Choice</option>
+                                </select>
+                            </div>
+
+                            <div class="field-container">
+                                <label class="label-small-blue">GROUP LIMIT</label>
+                                <input type="number" value="4" id="groupLimit">
+                            </div>
+
+                            <div class="group-preview-box">
+                                <p>Select classes and set a group limit to see a preview.</p>
+                            </div>
+                        </div>
+
+                        <div class="btn-container flex-between" style="margin-top: 40px;">
+                            <button class="prev-btn" onclick="showStep(2)">← PREVIOUS</button>
+                            <button class="publish-btn">PUBLISH ACTIVITY</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="preview-card">
+                <div class="preview-tabs">
+                    <button class="active">Details</button>
+                    <button>Logistics</button>
+                    <button>Settings</button>
+                </div>
+                <div class="preview-content">
+                    <div class="pdf-placeholder">PDF PREVIEW</div>
+                    <p class="label-small" id="previewMode">INDIVIDUAL</p>
+                    <h3 id="previewTitle">Activity Title</h3>
+                    <div class="preview-desc-box">
+                        <p id="previewDesc">Description will appear here.</p>
+                    </div>
+                    <div class="deadline-footer">
+                        <span>Deadline:</span>
+                        <strong id="previewDate">Not set</strong>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script>
+        const labItems = [
+            { name: "Absorbent Sheets", img: "https://via.placeholder.com/80?text=Sheets" },
+            { name: "Acetone", img: "https://via.placeholder.com/80?text=Acetone" },
+            { name: "Analytical Balance", img: "https://via.placeholder.com/80?text=Balance" },
+            { name: "Beaker", img: "https://via.placeholder.com/80?text=Beaker" },
+            { name: "Caliper", img: "https://via.placeholder.com/80?text=Caliper" },
+            { name: "Erlenmeyer Flask", img: "https://via.placeholder.com/80?text=Flask" },
+            { name: "Sodium Chloride", img: "https://via.placeholder.com/80?text=NaCl" },
+            { name: "Thermometer", img: "https://via.placeholder.com/80?text=Temp" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderItems();
+            setupPreviewListeners();
+        });
+
+        // Navigation Logic
+        function showStep(stepNumber) {
+            document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
+            document.getElementById('step' + stepNumber).style.display = 'block';
+
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            const currentIndicator = document.getElementById('stepIndicator' + stepNumber);
+            if(currentIndicator) currentIndicator.classList.add('active');
+        }
+
+        // Live Preview Setup
+        function setupPreviewListeners() {
+            const titleInput = document.getElementById('titleInput');
+            const descInput = document.getElementById('descInput');
+            const dateInput = document.getElementById('dateInput');
+            const previewTitle = document.getElementById('previewTitle');
+            const previewDesc = document.getElementById('previewDesc');
+            const previewDate = document.getElementById('previewDate');
+
+            titleInput.addEventListener('input', (e) => previewTitle.innerText = e.target.value || "Activity Title");
+            descInput.addEventListener('input', (e) => previewDesc.innerText = e.target.value || "Description will appear here.");
+            dateInput.addEventListener('change', (e) => {
+                previewDate.innerText = e.target.value ? new Date(e.target.value).toLocaleString() : "Not set";
+            });
+        }
+
+        // Logistics Step 2 Rendering
+        const grid = document.getElementById('equipmentGrid');
+        const searchInput = document.getElementById('equipmentSearch');
+
+        function renderItems(filterText = "") {
+            if (!grid) return;
+            grid.innerHTML = "";
+            labItems.filter(item => item.name.toLowerCase().includes(filterText.toLowerCase()))
+                .forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'item-card';
+                    card.innerHTML = `<img src="${item.img}" alt="${item.name}"><span>${item.name}</span>`;
+                    card.onclick = () => card.classList.toggle('selected');
+                    grid.appendChild(card);
+                });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => renderItems(e.target.value));
+        }
+
+        // Settings Step 3 Mode Toggle
+        function setMode(mode) {
+            const indBtn = document.getElementById('modeIndividual');
+            const grpBtn = document.getElementById('modeGroup');
+            const groupSettings = document.getElementById('groupSettings');
+            const previewModeLabel = document.getElementById('previewMode');
+
+            if (mode === 'group') {
+                indBtn.classList.remove('active');
+                grpBtn.classList.add('active');
+                groupSettings.style.display = 'block';
+                if(previewModeLabel) previewModeLabel.innerText = "GROUP";
+            } else {
+                grpBtn.classList.remove('active');
+                indBtn.classList.add('active');
+                groupSettings.style.display = 'none';
+                if(previewModeLabel) previewModeLabel.innerText = "INDIVIDUAL";
+            }
+        }
+    </script>
+</body>
+</html>
