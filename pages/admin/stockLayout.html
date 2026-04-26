@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Lab Shelf System - Clean</title>
+<title>Lab Shelf System - Stock Room</title>
 
 <style>
 body {
@@ -88,6 +88,19 @@ select {
     position: relative;
 }
 
+/* NEW: Layout Header Styling */
+.layout-header {
+    text-align: center;
+    font-weight: 800;
+    font-size: 20px;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #cbd5e1;
+}
+
 .shelf { fill: #f8fafc; stroke: #94a3b8; stroke-width: 2; cursor: pointer; transition: 0.3s; }
 .shelf:hover { fill: #fff7ed; stroke: #ff9800; }
 .active { fill: #ffedd5 !important; stroke: #ff9800 !important; stroke-width: 3; }
@@ -101,6 +114,14 @@ select {
     border-radius: 12px;
     border-left: 5px solid #ff9800;
     min-height: 80px;
+}
+
+/* Grid Background for SVG */
+#main-svg {
+    background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
 }
 </style>
 </head>
@@ -134,6 +155,8 @@ select {
     </div>
 
     <div class="canvas-container">
+        <div class="layout-header">Stock Room Layout</div>
+        
         <svg width="100%" height="500" id="main-svg" viewBox="0 0 1000 500">
             </svg>
 
@@ -154,31 +177,22 @@ const shelvesData = [
 ];
 
 const items = [
-    // Glassware
     { name: "Beaker", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
     { name: "Erlenmeyer Flask", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
     { name: "Graduated Cylinder", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
     { name: "Test Tubes", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
-    
-    // Chemicals
     { name: "Ethanol", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
     { name: "Hydrochloric Acid", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
     { name: "Distilled Water", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
     { name: "Sodium Chloride", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
-
-    // Equipment
     { name: "Digital Balance", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
     { name: "Bunsen Burner", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
     { name: "Microscope", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
     { name: "Centrifuge", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
-
-    // Safety
     { name: "Nitrile Gloves", shelf: "Shelf D", type: "Consumable", category: "Safety" },
     { name: "Safety Goggles", shelf: "Shelf D", type: "Non-Consumable", category: "Safety" },
     { name: "Lab Coats", shelf: "Shelf D", type: "Non-Consumable", category: "Safety" },
     { name: "First Aid Kit", shelf: "Shelf D", type: "Non-Consumable", category: "Safety" },
-
-    // Biologicals
     { name: "Agar Powder", shelf: "Shelf E", type: "Consumable", category: "Biologicals" },
     { name: "Petri Dishes", shelf: "Shelf E", type: "Consumable", category: "Biologicals" },
     { name: "Yeast Culture", shelf: "Shelf E", type: "Consumable", category: "Biologicals" },
@@ -188,10 +202,8 @@ const items = [
 let selectedType = "all";
 const svg = document.getElementById("main-svg");
 
-// Draw Shelves
 shelvesData.forEach(s => {
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    
     const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     rect.setAttribute("x", s.x);
     rect.setAttribute("y", s.y);
@@ -225,7 +237,6 @@ function renderItems() {
     const list = document.getElementById("item-list");
     const search = document.getElementById("search").value.toLowerCase();
     const category = document.getElementById("categoryFilter").value;
-
     list.innerHTML = "";
 
     items
@@ -268,7 +279,7 @@ function selectShelf(id) {
             shelfItems.length
             ? shelfItems.map(i => `
                 <div style="margin-bottom:5px; display:flex; justify-content:space-between">
-                    <span>• ${i.name}</span>
+          S          <span>• ${i.name}</span>
                     <span class="badge ${i.type === 'Consumable' ? 'consumable' : 'non'}" style="transform:scale(0.8)">${i.type}</span>
                 </div>
             `).join("")
