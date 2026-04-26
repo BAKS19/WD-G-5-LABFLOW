@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Slips</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f5f6f8;
+        color: #333;
+    }
+
+    main {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+        height: 100vh;
+    }
+
+    /* LEFT */
+    .left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    h2 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .subtitle {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .card {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
+    }
+
+    .filters {
+        display: flex;
+        gap: 10px;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 5px;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        background: #eee;
+    }
+
+    .tab.active {
+        background: orange;
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+    }
+
+    th {
+        background: #fafafa;
+        text-transform: uppercase;
+        font-size: 11px;
+        color: #888;
+    }
+
+    tr:hover {
+        background: #fff3e6;
+        cursor: pointer;
+    }
+
+    .status {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .Approved { background: #ffe5cc; color: #ff7a00; }
+    .Issued { background: #dbe7ff; color: #2f5cff; }
+    .Returned { background: #dff7e5; color: #1f9d4c; }
+
+    /* RIGHT PANEL */
+    .right {
+        width: 350px;
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        border: 1px dashed #ccc;
+        overflow-y: auto;
+    }
+
+    .empty {
+        text-align: center;
+        color: #aaa;
+        margin-top: 50%;
+    }
+
+    .receipt h3 {
+        margin: 0 0 5px;
+    }
+
+    .small {
+        font-size: 12px;
+        color: #777;
+    }
+
+    .item {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+        font-size: 12px;
+    }
+</style>
+</head>
+
+<body>
+
+<main>
+
+    <!-- LEFT -->
+    <div class="left">
+
+        <div>
+            <h2>My Slips.</h2>
+            <div class="subtitle">A record of your borrowing history.</div>
+        </div>
+
+        <div class="card">
+            <input type="search" placeholder="Search slip, activity, purpose...">
+        </div>
+
+        <div class="tabs">
+            <div class="tab active">All</div>
+            <div class="tab">Pending</div>
+            <div class="tab">Approved</div>
+            <div class="tab">Issued</div>
+            <div class="tab">Returned</div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>Date</th>
+                    <th style="text-align:center;">Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr onclick='showReceipt({
+                    "title":"Independent Research",
+                    "date":"Apr 19, 2026",
+                    "status":"Approved",
+                    "remarks":"for something",
+                    "items":[
+                        {"name":"Beaker","qty":1},
+                        {"name":"Thermometer","qty":3}
+                    ]
+                })'>
+                    <td>Independent Research</td>
+                    <td>Apr 19, 2026</td>
+                    <td style="text-align:center;"><span class="status Approved">Approved</span></td>
+                </tr>
+
+                <tr onclick='showReceipt({
+                    "title":"Independent Research",
+                    "date":"Apr 06, 2026",
+                    "status":"Issued",
+                    "remarks":"No reason provided",
+                    "items":[
+                        {"name":"DNA Sequencer","qty":1}
+                    ]
+                })'>
+                    <td>Independent Research</td>
+                    <td>Apr 06, 2026</td>
+                    <td style="text-align:center;"><span class="status Issued">Issued</span></td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- RIGHT -->
+    <aside class="right">
+        <div id="empty" class="empty">
+            Click on a slip to view details.
+        </div>
+
+        <div id="receipt" class="receipt" style="display:none;">
+            <h3 id="r-title"></h3>
+            <div class="small" id="r-date"></div>
+            <div class="small" id="r-status"></div>
+            <p class="small" id="r-remarks"></p>
+
+            <h4>Items</h4>
+            <div id="r-items"></div>
+        </div>
+    </aside>
+
+</main>
+
+<script>
+function showReceipt(data) {
+
+    document.getElementById("empty").style.display = "none";
+    document.getElementById("receipt").style.display = "block";
+
+    document.getElementById("r-title").innerText = data.title;
+    document.getElementById("r-date").innerText = "Date: " + data.date;
+    document.getElementById("r-status").innerText = "Status: " + data.status;
+    document.getElementById("r-remarks").innerText = "Remarks: " + (data.remarks || "None");
+
+    let itemsHTML = "";
+    data.items.forEach(i => {
+        itemsHTML += `<div class="item">${i.name} - Qty: ${i.qty}</div>`;
+    });
+
+    document.getElementById("r-items").innerHTML = itemsHTML;
+}
+</script>
+
+</body>
+</html>
