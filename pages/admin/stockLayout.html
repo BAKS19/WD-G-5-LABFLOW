@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lab Shelf System - Stock Room</title>
+
+<style>
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f1f5f9;
+    margin: 0;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    padding: 24px;
+}
+
+/* Sidebar */
+.sidebar {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.sidebar h3 { margin-top: 0; color: #1e293b; border-bottom: 2px solid #ff9800; padding-bottom: 8px; }
+
+#search {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.filter-group { margin-bottom: 15px; }
+.filter-group b { font-size: 13px; color: #64748b; display: block; margin-bottom: 5px; }
+
+.filter-group button {
+    padding: 6px 12px;
+    margin: 2px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    background: #fff;
+    transition: 0.2s;
+}
+
+.filter-active { background: #ff9800 !important; color: white; border-color: #f57c00 !important; }
+
+select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+}
+
+/* Item List */
+.item {
+    padding: 10px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item:hover { background: #fff7ed; border-radius: 8px; }
+
+/* Badges */
+.badge { font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 600; text-transform: uppercase; }
+.consumable { background: #fef3c7; color: #92400e; }
+.non { background: #dcfce7; color: #166534; }
+
+/* Canvas Area */
+.canvas-container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+/* NEW: Layout Header Styling */
+.layout-header {
+    text-align: center;
+    font-weight: 800;
+    font-size: 20px;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #cbd5e1;
+}
+
+.shelf { fill: #f8fafc; stroke: #94a3b8; stroke-width: 2; cursor: pointer; transition: 0.3s; }
+.shelf:hover { fill: #fff7ed; stroke: #ff9800; }
+.active { fill: #ffedd5 !important; stroke: #ff9800 !important; stroke-width: 3; }
+
+.shelf-label { font-size: 12px; font-weight: bold; fill: #475569; pointer-events: none; }
+
+#info-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border-left: 5px solid #ff9800;
+    min-height: 80px;
+}
+
+/* Grid Background for SVG */
+#main-svg {
+    background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <h3>🧪 Inventory</h3>
+        <input type="text" id="search" placeholder="Search items..." />
+
+        <div class="filter-group">
+            <b>Filter by Type</b>
+            <button onclick="setType('all')" id="type-all">All</button>
+            <button onclick="setType('Consumable')" id="type-consumable">Consumable</button>
+            <button onclick="setType('Non-Consumable')" id="type-non">Non-Consumable</button>
+        </div>
+
+        <div class="filter-group">
+            <b>Filter by Category</b>
+            <select id="categoryFilter" onchange="renderItems()">
+                <option value="all">All Categories</option>
+                <option value="Glassware">Glassware (Shelf A)</option>
+                <option value="Chemicals">Chemicals (Shelf B)</option>
+                <option value="Equipment">Equipment (Shelf C)</option>
+                <option value="Safety">Safety (Shelf D)</option>
+                <option value="Biologicals">Biologicals (Shelf E)</option>
+            </select>
+        </div>
+
+        <div id="item-list"></div>
+    </div>
+
+    <div class="canvas-container">
+        <div class="layout-header">Stock Room Layout</div>
+        
+        <svg width="100%" height="500" id="main-svg" viewBox="0 0 1000 500">
+            </svg>
+
+        <div id="info-box">
+            <strong>Storage Info</strong><br>
+            Select a shelf on the map or an item from the list to see details.
+        </div>
+    </div>
+</div>
+
+<script>
+const shelvesData = [
+    { id: "Shelf A", category: "Glassware", x: 50, y: 50, w: 200, h: 120 },
+    { id: "Shelf B", category: "Chemicals", x: 300, y: 50, w: 200, h: 120 },
+    { id: "Shelf C", category: "Equipment", x: 550, y: 50, w: 350, h: 150 },
+    { id: "Shelf D", category: "Safety", x: 50, y: 250, w: 200, h: 100 },
+    { id: "Shelf E", category: "Biologicals", x: 300, y: 250, w: 200, h: 150 }
+];
+
+const items = [
+    { name: "Beaker", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
+    { name: "Erlenmeyer Flask", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
+    { name: "Graduated Cylinder", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
+    { name: "Test Tubes", shelf: "Shelf A", type: "Non-Consumable", category: "Glassware" },
+    { name: "Ethanol", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
+    { name: "Hydrochloric Acid", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
+    { name: "Distilled Water", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
+    { name: "Sodium Chloride", shelf: "Shelf B", type: "Consumable", category: "Chemicals" },
+    { name: "Digital Balance", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
+    { name: "Bunsen Burner", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
+    { name: "Microscope", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
+    { name: "Centrifuge", shelf: "Shelf C", type: "Non-Consumable", category: "Equipment" },
+    { name: "Nitrile Gloves", shelf: "Shelf D", type: "Consumable", category: "Safety" },
+    { name: "Safety Goggles", shelf: "Shelf D", type: "Non-Consumable", category: "Safety" },
+    { name: "Lab Coats", shelf: "Shelf D", type: "Non-Consumable", category: "Safety" },
+    { name: "First Aid Kit", shelf: "Shelf D", type: "Non-Consumable", category: "Safety" },
+    { name: "Agar Powder", shelf: "Shelf E", type: "Consumable", category: "Biologicals" },
+    { name: "Petri Dishes", shelf: "Shelf E", type: "Consumable", category: "Biologicals" },
+    { name: "Yeast Culture", shelf: "Shelf E", type: "Consumable", category: "Biologicals" },
+    { name: "Sterile Swabs", shelf: "Shelf E", type: "Consumable", category: "Biologicals" }
+];
+
+let selectedType = "all";
+const svg = document.getElementById("main-svg");
+
+shelvesData.forEach(s => {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", s.x);
+    rect.setAttribute("y", s.y);
+    rect.setAttribute("width", s.w);
+    rect.setAttribute("height", s.h);
+    rect.setAttribute("rx", "8");
+    rect.setAttribute("class", "shelf");
+    rect.dataset.id = s.id;
+    rect.onclick = () => selectShelf(s.id);
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", s.x + 10);
+    text.setAttribute("y", s.y + 25);
+    text.setAttribute("class", "shelf-label");
+    text.textContent = `${s.id}: ${s.category}`;
+
+    group.appendChild(rect);
+    group.appendChild(text);
+    svg.appendChild(group);
+});
+
+function setType(type) {
+    selectedType = type;
+    document.querySelectorAll(".filter-group button").forEach(b => b.classList.remove("filter-active"));
+    const btnId = type === "all" ? "type-all" : (type === "Consumable" ? "type-consumable" : "type-non");
+    document.getElementById(btnId).classList.add("filter-active");
+    renderItems();
+}
+
+function renderItems() {
+    const list = document.getElementById("item-list");
+    const search = document.getElementById("search").value.toLowerCase();
+    const category = document.getElementById("categoryFilter").value;
+    list.innerHTML = "";
+
+    items
+        .filter(i =>
+            i.name.toLowerCase().includes(search) &&
+            (selectedType === "all" || i.type === selectedType) &&
+            (category === "all" || i.category === category)
+        )
+        .forEach(i => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `
+                <div>
+                    <strong>${i.name}</strong><br>
+                    <small style="color:#64748b">${i.category}</small>
+                </div>
+                <span class="badge ${i.type === 'Consumable' ? 'consumable' : 'non'}">${i.type === 'Consumable' ? 'CON' : 'NON'}</span>
+            `;
+            div.onclick = () => selectShelf(i.shelf);
+            list.appendChild(div);
+        });
+}
+
+function selectShelf(id) {
+    document.querySelectorAll(".shelf").forEach(s => {
+        s.classList.remove("active");
+        if (s.dataset.id === id) s.classList.add("active");
+    });
+
+    const shelfData = shelvesData.find(s => s.id === id);
+    const shelfItems = items.filter(i => i.shelf === id);
+
+    document.getElementById("info-box").innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center">
+            <h4 style="margin:0">${id} - ${shelfData.category}</h4>
+            <span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px">Section: ${shelfData.category}</span>
+        </div>
+        <hr style="border:none; border-top:1px solid #ddd; margin:10px 0">
+        ${
+            shelfItems.length
+            ? shelfItems.map(i => `
+                <div style="margin-bottom:5px; display:flex; justify-content:space-between">
+          S          <span>• ${i.name}</span>
+                    <span class="badge ${i.type === 'Consumable' ? 'consumable' : 'non'}" style="transform:scale(0.8)">${i.type}</span>
+                </div>
+            `).join("")
+            : "<em>No items stored here.</em>"
+        }
+    `;
+}
+
+document.getElementById("search").addEventListener("input", renderItems);
+setType("all");
+</script>
+
+</body>
+</html>
