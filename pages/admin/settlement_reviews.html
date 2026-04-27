@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settlement Reviews - LabFlow</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI'; }
+
+body { background: #f8fafc; color: #334155; }
+
+.settlement-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: auto;
+    height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.title { font-size: 2rem; font-weight: 800; }
+.highlight { color: #f97316; }
+.subtitle { font-size: 0.75rem; color: #94a3b8; }
+
+/* Tabs */
+.toggle-wrapper { display: flex; gap: 0.5rem; }
+.tab {
+    flex: 1;
+    padding: 0.6rem;
+    text-align: center;
+    background: white;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.tab.active { background: #f97316; color: white; }
+
+/* Counters */
+.status-counters {
+    display: flex;
+    gap: 0.5rem;
+}
+.counter {
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+.pending { background: #ffedd5; color: #ea580c; }
+.approved { background: #dcfce7; color: #166534; }
+.rejected { background: #fee2e2; color: #991b1b; }
+
+/* Filters */
+.filter-bar { display: flex; gap: 0.5rem; }
+.filter-btn {
+    padding: 0.5rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.filter-btn.active { background: #f97316; color: white; }
+
+/* Table */
+.table-card { background: white; border-radius: 1rem; overflow: hidden; flex: 1; }
+.cases-table { width: 100%; border-collapse: collapse; }
+.cases-table th, .cases-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+.cases-table td { cursor: pointer; }
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 9px;
+    border-radius: 5px;
+}
+.unresolved { background: #ffedd5; color: #ea580c; }
+.approved { background: #dcfce7; color: #166534; }
+.rejected { background: #fee2e2; color: #991b1b; }
+
+/* Sidebar */
+.sidebar { width: 350px; }
+.details-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.action-buttons { display: flex; gap: 0.5rem; }
+.btn {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+.approve-btn { background: #22c55e; color: white; }
+.reject-btn { background: #ef4444; color: white; }
+
+.waiting-state {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+</style>
+</head>
+
+<body>
+
+<main class="settlement-container">
+
+<section class="main-content">
+
+<h2 class="title">Settlement <span class="highlight">Reviews.</span></h2>
+<p class="subtitle">Review damaged items and payment proofs</p>
+
+<!-- Tabs -->
+<div class="toggle-wrapper">
+    <div class="tab active" onclick="switchTab(this)">All Student Cases</div>
+    <div class="tab" onclick="switchTab(this)">My Personal Cases</div>
+</div>
+
+<!-- Counters -->
+<div class="status-counters">
+    <div class="counter pending">Pending: <span id="count-pending">0</span></div>
+    <div class="counter approved">Approved: <span id="count-approved">0</span></div>
+    <div class="counter rejected">Rejected: <span id="count-rejected">0</span></div>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCases('all', this)">All</button>
+    <button class="filter-btn" onclick="filterCases('unresolved', this)">Pending</button>
+    <button class="filter-btn" onclick="filterCases('approved', this)">Approved</button>
+    <button class="filter-btn" onclick="filterCases('rejected', this)">Rejected</button>
+</div>
+
+<!-- Table -->
+<div class="table-card">
+<table class="cases-table">
+<thead>
+<tr>
+<th>Student</th>
+<th>Item</th>
+<th>Damage</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr data-status="unresolved" onclick="loadDetails(this,'Admin User','Beaker','Broken','1','10 ml')">
+<td>Admin User</td>
+<td>Beaker</td>
+<td>Broken (1)</td>
+<td><span class="status-badge unresolved">Pending</span></td>
+</tr>
+
+<tr data-status="approved" onclick="loadDetails(this,'Juan Dela Cruz','Test Tube','Cracked','2','50 ml')">
+<td>Juan Dela Cruz</td>
+<td>Test Tube</td>
+<td>Cracked (2)</td>
+<td><span class="status-badge approved">Approved</span></td>
+</tr>
+
+<tr data-status="rejected" onclick="loadDetails(this,'Maria Santos','Flask','Chipped','1','100 ml')">
+<td>Maria Santos</td>
+<td>Flask</td>
+<td>Chipped (1)</td>
+<td><span class="status-badge rejected">Rejected</span></td>
+</tr>
+
+<tr data-status="unresolved" onclick="loadDetails(this,'Carlos Reyes','Cylinder','Broken','3','25 ml')">
+<td>Carlos Reyes</td>
+<td>Cylinder</td>
+<td>Broken (3)</td>
+<td><span class="status-badge unresolved">Pending</span></td>
+</tr>
+
+<tr data-status="approved" onclick="loadDetails(this,'Angela Cruz','Pipette','Contaminated','5','5 ml')">
+<td>Angela Cruz</td>
+<td>Pipette</td>
+<td>Contaminated (5)</td>
+<td><span class="status-badge approved">Approved</span></td>
+</tr>
+
+<tr data-status="rejected" onclick="loadDetails(this,'Mark Bautista','Burette','Leaking','1','50 ml')">
+<td>Mark Bautista</td>
+<td>Burette</td>
+<td>Leaking (1)</td>
+<td><span class="status-badge rejected">Rejected</span></td>
+</tr>
+
+<tr data-status="unresolved" onclick="loadDetails(this,'Liza Fernandez','Watch Glass','Broken','4','75 mm')">
+<td>Liza Fernandez</td>
+<td>Watch Glass</td>
+<td>Broken (4)</td>
+<td><span class="status-badge unresolved">Pending</span></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+</section>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+<div class="details-card">
+
+<div>
+<h3 id="itemTitle">Select a case</h3>
+<p>Reported by: <span id="reporter">-</span></p>
+<p>Damage: <strong id="damageType">-</strong></p>
+<p>Qty: <strong id="quantity">-</strong></p>
+<p>Variant: <strong id="variant">-</strong></p>
+</div>
+
+<div>
+<div class="action-buttons">
+<button class="btn approve-btn" onclick="updateStatus('approved')">Approve</button>
+<button class="btn reject-btn" onclick="updateStatus('rejected')">Reject</button>
+</div>
+<div class="waiting-state" id="statusText">Waiting for action</div>
+</div>
+
+</div>
+</aside>
+
+</main>
+
+<script>
+let selectedRow = null;
+
+// Load details
+function loadDetails(row, user, item, damage, qty, variant){
+    selectedRow = row;
+
+    document.getElementById("reporter").textContent = user;
+    document.getElementById("itemTitle").textContent = item;
+    document.getElementById("damageType").textContent = damage;
+    document.getElementById("quantity").textContent = qty;
+    document.getElementById("variant").textContent = variant;
+
+    document.getElementById("statusText").textContent = "Waiting for action";
+}
+
+// Update status
+function updateStatus(status){
+    if(!selectedRow){
+        alert("Select a case first.");
+        return;
+    }
+
+    const badge = selectedRow.querySelector(".status-badge");
+
+    badge.classList.remove("unresolved","approved","rejected");
+    badge.classList.add(status);
+
+    if(status === "approved"){
+        badge.textContent = "Approved";
+        document.getElementById("statusText").textContent = "Case Approved";
+    }
+
+    if(status === "rejected"){
+        badge.textContent = "Rejected";
+        document.getElementById("statusText").textContent = "Case Rejected";
+    }
+
+    selectedRow.setAttribute("data-status", status);
+
+    updateCounters();
+}
+
+// Filter
+function filterCases(status, btn){
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+        const rowStatus = row.getAttribute("data-status");
+        row.style.display = (status === "all" || rowStatus === status) ? "" : "none";
+    });
+}
+
+// Counters
+function updateCounters(){
+    let pending = 0, approved = 0, rejected = 0;
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+        const s = row.getAttribute("data-status");
+        if(s === "unresolved") pending++;
+        if(s === "approved") approved++;
+        if(s === "rejected") rejected++;
+    });
+
+    document.getElementById("count-pending").textContent = pending;
+    document.getElementById("count-approved").textContent = approved;
+    document.getElementById("count-rejected").textContent = rejected;
+}
+
+// Tabs
+function switchTab(tab){
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+}
+
+// Init
+updateCounters();
+</script>
+
+</body>
+</html>
