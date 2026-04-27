@@ -4,35 +4,35 @@ const indicator = document.getElementById("indicator");
 
 function switchTab(tabId) {
 
-  contents.forEach(c => {
-    c.classList.remove("active");
-  });
+    contents.forEach(c => {
+        c.classList.remove("active");
+    });
 
-  document.getElementById(tabId).classList.add("active");
+    document.getElementById(tabId).classList.add("active");
 
-  tabs.forEach(t => {
-    t.classList.remove("active");
-  });
+    tabs.forEach(t => {
+        t.classList.remove("active");
+    });
 
-  const activeTab = Array.from(tabs).find(t =>
-    t.textContent.replace(/\s+/g, '-').toLowerCase().includes(tabId.split('-')[0])
-  );
+    const activeTab = Array.from(tabs).find(t =>
+        t.textContent.replace(/\s+/g, '-').toLowerCase().includes(tabId.split('-')[0])
+    );
 
-  if (activeTab) activeTab.classList.add("active");
+    if (activeTab) activeTab.classList.add("active");
 
-  moveIndicator();
+    moveIndicator();
 }
 
 function moveIndicator() {
-  const active = document.querySelector(".tab.active");
-  if (!active) return;
+    const active = document.querySelector(".tab.active");
+    if (!active) return;
 
-  indicator.style.width = active.offsetWidth + "px";
-  indicator.style.left = active.offsetLeft + "px";
+    indicator.style.width = active.offsetWidth + "px";
+    indicator.style.left = active.offsetLeft + "px";
 }
 
 window.addEventListener("load", () => {
-  moveIndicator();
+    moveIndicator();
 });
 
 window.addEventListener("resize", moveIndicator);
@@ -111,15 +111,15 @@ verifyForm.addEventListener("submit", function (e) {
         passStep.classList.remove("hidden");
         idStep.classList.add("hidden");
     }
-    else if (id === "2024-03655") {
+    else if (id === "202403655") {
         currentUser = "student";
-        document.getElementById("roleLabel").textContent = "Student User";
+        document.getElementById("roleLabel").textContent = "Mark John Ando";
         passStep.classList.remove("hidden");
         idStep.classList.add("hidden");
     }
     else if (id === "1002") {
         currentUser = "teacher";
-        document.getElementById("roleLabel").textContent = "Teacher User";
+        document.getElementById("roleLabel").textContent = "Jaydee Ballaho";
         passStep.classList.remove("hidden");
         idStep.classList.add("hidden");
     }
@@ -169,3 +169,28 @@ if (switchAccount) {
         resetAll();
     });
 }
+
+
+
+
+
+/*STUDENT*/
+function showReceipt(data) {
+
+    document.getElementById("empty").style.display = "none";
+    document.getElementById("receipt").style.display = "block";
+
+    document.getElementById("r-title").innerText = data.title;
+    document.getElementById("r-date").innerText = "Date: " + data.date;
+    document.getElementById("r-status").innerText = "Status: " + data.status;
+    document.getElementById("r-remarks").innerText = "Remarks: " + (data.remarks || "None");
+
+    let itemsHTML = "";
+    data.items.forEach(i => {
+        itemsHTML += `<div class="item">${i.name} - Qty: ${i.qty}</div>`;
+    });
+
+    document.getElementById("r-items").innerHTML = itemsHTML;
+}
+
+
