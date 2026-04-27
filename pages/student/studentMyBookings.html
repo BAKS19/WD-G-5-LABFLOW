@@ -1,171 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        @keyframes reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-reveal { animation: reveal 0.5s ease-out forwards; }
-        .sticky-sidebar { position: sticky; top: 2rem; height: calc(100vh - 4rem); }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #e2e8f0; border-radius: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Bookings</title>
+
+<style>
+/* Base */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f9fafb;
+    margin: 0;
+    color: #1f2937;
+}
+
+/* Layout */
+.main {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+}
+
+.left { flex: 1; }
+.right { width: 350px; }
+
+/* Header */
+h2 {
+    font-size: 32px;
+    font-weight: 800;
+}
+.orange { color: #f97316; }
+
+/* Card */
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Inputs */
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 0 0 0 2px rgba(249,115,22,0.2);
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.filters button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 11px;
+    font-weight: bold;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filters button.active {
+    background: #f97316;
+    color: white;
+    box-shadow: 0 4px 12px rgba(249,115,22,0.3);
+}
+
+.filters button:hover {
+    background: #f3f4f6;
+}
+
+/* Table */
+.table-container {
+    margin-top: 10px;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    font-size: 11px;
+    color: #9ca3af;
+    padding: 12px;
+    background: #f9fafb;
+}
+
+td {
+    padding: 14px;
+    font-size: 13px;
+    border-top: 1px solid #f3f4f6;
+}
+
+tr:hover {
+    background: #fff7ed;
+    cursor: pointer;
+}
+
+/* Status */
+.status {
+    font-size: 10px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* Sidebar */
+.sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+.empty {
+    text-align: center;
+    color: #9ca3af;
+    padding: 40px;
+    border: 2px dashed #e5e7eb;
+    border-radius: 20px;
+}
+
+.details {
+    display: none;
+}
+
+.details.active {
+    display: block;
+}
+
+/* Labels */
+.label {
+    font-size: 10px;
+    color: #9ca3af;
+    font-weight: bold;
+}
+
+.value {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Button */
+.close-btn {
+    margin-top: 10px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    background: #f97316;
+    color: white;
+    cursor: pointer;
+}
+</style>
 </head>
-<body class="bg-gray-50 min-h-screen text-gray-900">
 
-    <main class="p-8 flex flex-col lg:flex-row gap-8 animate-reveal" x-data="bookingApp()">
-        
-        <div class="flex-1 flex flex-col gap-6">
-            <header class="mb-2">
-                <h2 class="text-4xl font-extrabold text-gray-800 tracking-tighter">My Bookings<span class="text-orange-500">.</span></h2>
-                <p class="text-slate-400 font-medium text-xs">A record of your supervised apparatus bookings.</p>
-            </header>
+<body>
 
-            <div class="bg-white p-4 rounded-2xl border border-gray-200/50 shadow-sm">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    <div class="md:col-span-2">
-                        <label class="text-xs font-bold text-gray-500 mb-2 block">Search by Item, Purpose, or Supervisor</label>
-                        <input type="search" x-model="search" placeholder="e.g. Microscope or Dr. Smith" class="w-full bg-gray-50 border-gray-200 p-3 rounded-xl font-medium text-sm shadow-sm focus:ring-2 focus:ring-orange-500 border">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 mb-2 block">Sort by Date</label>
-                        <select x-model="sortOrder" class="w-full bg-gray-50 border-gray-200 p-3 rounded-xl font-medium text-sm shadow-sm focus:ring-2 focus:ring-orange-500 border">
-                            <option value="desc">Newest First</option>
-                            <option value="asc">Oldest First</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+<div class="main">
 
-            <div class="bg-white p-2 rounded-2xl border border-gray-200/50 shadow-sm flex flex-wrap gap-1">
-                <template x-for="status in ['All', 'Pending', 'Approved', 'Prepared', 'Denied', 'Claimed', 'Completed', 'Cancelled']">
-                    <button @click="activeStatus = status" 
-                            :class="activeStatus === status ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' : 'text-gray-500 hover:bg-gray-50'"
-                            class="flex-1 text-center px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300">
-                        <span x-text="status"></span>
-                    </button>
-                </template>
-            </div>
+<div class="left">
 
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-200/50 flex-1 flex flex-col overflow-hidden">
-                <div class="overflow-y-auto flex-1">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-50 border-b border-gray-100 sticky top-0">
-                            <tr>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Item / Purpose</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Supervisor</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Scheduled Date</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <template x-for="booking in filteredBookings" :key="booking.booking_id">
-                                <tr @click="selectedBooking = booking" 
-                                    class="hover:bg-orange-50/50 transition-colors cursor-pointer"
-                                    :class="selectedBooking?.booking_id === booking.booking_id ? 'bg-orange-50' : ''">
-                                    <td class="px-6 py-4">
-                                        <p class="font-bold text-gray-800 text-sm" x-text="booking.Item_Name"></p>
-                                        <p class="text-xs text-gray-500 italic truncate max-w-xs" x-text="'&quot;' + booking.purpose + '&quot;'"></p>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600 font-medium" x-text="booking.SupervisorName"></td>
-                                    <td class="px-6 py-4 text-xs text-gray-600 font-medium">
-                                        <p x-text="booking.date"></p>
-                                        <p x-text="booking.time"></p>
-                                        <div class="mt-2">
-                                            <span class="inline-block px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest bg-red-100 text-red-600 animate-pulse">LATE BY: +23d</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-center">
-                                        <span class="px-2 py-1 rounded-md text-[9px] font-black uppercase bg-blue-100 text-blue-600" x-text="booking.status"></span>
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <h2>My Bookings<span class="orange">.</span></h2>
+
+    <div class="card">
+        <input id="search" placeholder="Search...">
+        <br><br>
+        <select id="sort">
+            <option value="desc">Newest First</option>
+            <option value="asc">Oldest First</option>
+        </select>
+    </div>
+
+    <div class="card filters" id="filters"></div>
+
+    <div class="card table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item / Purpose</th>
+                    <th>Supervisor</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="table"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<div class="right sidebar">
+
+    <div class="card">
+        <div id="empty" class="empty">Click a booking</div>
+
+        <div id="details" class="details">
+            <h3>Booking Details</h3>
+
+            <p class="label">Item</p>
+            <p class="value" id="dItem"></p>
+
+            <p class="label">Purpose</p>
+            <p id="dPurpose"></p>
+
+            <p class="label">Supervisor</p>
+            <p id="dSupervisor"></p>
+
+            <p class="label">Status</p>
+            <p id="dStatus"></p>
+
+            <button class="close-btn" onclick="clearDetails()">Close</button>
         </div>
+    </div>
 
-        <aside class="w-full lg:w-96 sticky-sidebar">
-            <div class="h-full">
-                <div x-show="!selectedBooking" class="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl">
-                    <p class="text-sm mt-1">Click on a booking to view its details.</p>
-                </div>
-                
-                <div x-show="selectedBooking" class="h-full bg-white rounded-3xl shadow-xl border border-gray-100 flex flex-col overflow-hidden p-6" style="display: none;">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-lg text-gray-800">Booking Details</h3>
-                        <button @click="selectedBooking = null" class="text-gray-400 hover:text-gray-600">Close</button>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Item Name</label>
-                            <p class="text-sm font-bold text-gray-800" x-text="selectedBooking?.Item_Name"></p>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Purpose</label>
-                            <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg mt-1" x-text="selectedBooking?.purpose"></p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Supervisor</label>
-                                <p class="text-sm font-semibold text-gray-700" x-text="selectedBooking?.SupervisorName"></p>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Status</label>
-                                <p class="text-sm font-semibold text-blue-600" x-text="selectedBooking?.status"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    </main>
+</div>
 
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('bookingApp', () => ({
-                selectedBooking: null,
-                search: '',
-                activeStatus: 'All',
-                sortOrder: 'desc',
-                bookings: [
-                    {
-                        booking_id: "5",
-                        Item_Name: "Liquid Chromatography-Mass Spectrometry",
-                        purpose: "for the research",
-                        SupervisorName: "Jaydee Ballaho",
-                        date: "Apr 03, 2026",
-                        time: "01:55 PM - 03:25 PM",
-                        status: "Claimed"
-                    },
-                    {
-                        booking_id: "4",
-                        Item_Name: "Next-Generation DNA Sequencer",
-                        purpose: "something for my research",
-                        SupervisorName: "Jaydee Ballaho",
-                        date: "Apr 03, 2026",
-                        time: "01:00 PM - 02:30 PM",
-                        status: "Claimed"
-                    }
-                ],
-                get filteredBookings() {
-                    let filtered = this.bookings.filter(b => {
-                        const matchesSearch = b.Item_Name.toLowerCase().includes(this.search.toLowerCase()) || 
-                                              b.purpose.toLowerCase().includes(this.search.toLowerCase());
-                        const matchesStatus = this.activeStatus === 'All' || b.status === this.activeStatus;
-                        return matchesSearch && matchesStatus;
-                    });
-                    
-                    return filtered.sort((a, b) => {
-                        return this.sortOrder === 'asc' ? a.booking_id - b.booking_id : b.booking_id - a.booking_id;
-                    });
-                }
-            }));
-        });
-    </script>
+</div>
+
+<script>
+const bookings = [
+    {
+        booking_id: 5,
+        Item_Name: "Liquid Chromatography-Mass Spectrometry",
+        purpose: "for the research",
+        SupervisorName: "Jaydee Ballaho",
+        date: "Apr 03, 2026",
+        time: "01:55 PM",
+        status: "Claimed"
+    },
+    {
+        booking_id: 4,
+        Item_Name: "Next-Generation DNA Sequencer",
+        purpose: "DNA analysis",
+        SupervisorName: "Jaydee Ballaho",
+        date: "Apr 03, 2026",
+        time: "01:00 PM",
+        status: "Claimed"
+    }
+];
+
+const statuses = ["All","Pending","Approved","Prepared","Denied","Claimed","Completed","Cancelled"];
+let activeStatus = "All";
+
+const table = document.getElementById("table");
+const search = document.getElementById("search");
+const sort = document.getElementById("sort");
+const filters = document.getElementById("filters");
+
+statuses.forEach(s => {
+    const btn = document.createElement("button");
+    btn.textContent = s;
+    btn.onclick = () => {
+        activeStatus = s;
+        document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        render();
+    };
+    filters.appendChild(btn);
+});
+
+function render() {
+    let list = bookings.filter(b => {
+        return (
+            (b.Item_Name.toLowerCase().includes(search.value.toLowerCase()) ||
+            b.purpose.toLowerCase().includes(search.value.toLowerCase())) &&
+            (activeStatus === "All" || b.status === activeStatus)
+        );
+    });
+
+    list.sort((a,b)=> sort.value==="asc"?a.booking_id-b.booking_id:b.booking_id-a.booking_id);
+
+    table.innerHTML = "";
+
+    list.forEach(b => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td><b>${b.Item_Name}</b><br><small>${b.purpose}</small></td>
+            <td>${b.SupervisorName}</td>
+            <td>${b.date}<br>${b.time}</td>
+            <td><span class="status">${b.status}</span></td>
+        `;
+
+        tr.onclick = () => showDetails(b);
+        table.appendChild(tr);
+    });
+}
+
+function showDetails(b){
+    document.getElementById("details").classList.add("active");
+    document.getElementById("empty").style.display="none";
+
+    dItem.textContent=b.Item_Name;
+    dPurpose.textContent=b.purpose;
+    dSupervisor.textContent=b.SupervisorName;
+    dStatus.textContent=b.status;
+}
+
+function clearDetails(){
+    document.getElementById("details").classList.remove("active");
+    document.getElementById("empty").style.display="block";
+}
+
+search.oninput = render;
+sort.onchange = render;
+
+render();
+</script>
+
 </body>
 </html>

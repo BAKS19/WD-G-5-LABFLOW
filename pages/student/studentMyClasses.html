@@ -1,148 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Classes Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Classes Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+/* Layout */
+.main {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+}
+
+.left { flex: 1; }
+.right { width: 360px; }
+
+/* Header */
+h2 {
+    font-size: 32px;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: italic;
+}
+.orange { color: #ea580c; }
+
+/* Card */
+.card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Class List */
+.class-list {
+    display: grid;
+    gap: 10px;
+}
+
+.class-btn {
+    text-align: left;
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.class-btn:hover {
+    border-color: #f97316;
+}
+
+/* Sidebar */
+.sidebar {
+    position: sticky;
+    top: 80px;
+}
+
+/* Empty */
+.empty {
+    text-align: center;
+    padding: 40px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 24px;
+    color: #94a3b8;
+}
+
+/* Details */
+.details {
+    display: none;
+}
+
+.details.active {
+    display: block;
+    border-top: 5px solid #f97316;
+}
+
+/* Stats */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 16px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.label {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: bold;
+}
+
+.value {
+    font-weight: bold;
+}
+
+/* Status */
+.status-box {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 16px;
+}
+
+.green { color: #059669; }
+.yellow { color: #d97706; }
+
+/* Deadlines */
+.deadline {
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.deadline:hover {
+    border-color: #fdba74;
+    background: #fff7ed;
+}
+
+/* Button */
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: #f97316;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #ea580c;
+}
+
+/* Modal Styles for Activity List */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0; top: 0; width: 100%; height: 100%; 
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; padding: 20px;
+    border: 1px solid #888;
+    width: 400px; border-radius: 20px;
+}
+</style>
 </head>
-<body class="bg-slate-50 min-h-screen">
 
-    <main class="p-8 animate-reveal flex flex-col md:flex-row gap-8" x-data="myClassesApp()">
-        
-        <div class="flex-1">
-            <header class="mb-12">
-                <h2 class="text-4xl font-black text-[#0f172a] uppercase italic tracking-tighter">
-                    My <span class="text-orange-600">Classes.</span>
-                </h2>
-                <p class="text-slate-400 font-medium text-xs mt-2">Select a class to view its activities and materials.</p>
-            </header>
+<body>
 
-            <div x-show="classes.length === 0" class="text-center p-20 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-700">You are not enrolled in any classes yet.</h3>
-                <p class="text-sm text-slate-400 mt-2">Please contact your instructor to be added to a class.</p>
+<div class="main">
+    <div class="left">
+        <h2>My <span class="orange">Classes.</span></h2>
+        <p style="color:#94a3b8; font-size:12px;">Select a class to view its activities.</p>
+        <br>
+        <div id="emptyClasses" class="card" style="display:none;">No classes available.</div>
+        <div id="classList" class="class-list"></div>
+    </div>
+
+    <div class="right sidebar">
+        <div id="emptyState" class="empty">Select a Class</div>
+        <div id="details" class="card details">
+            <h3 id="dName"></h3>
+            <p id="dTeacher" style="color:#94a3b8; font-size:12px;"></p>
+            <br>
+            <div class="stats">
+                <div class="stat">
+                    <div class="label">Semester</div>
+                    <div id="dSemester" class="value"></div>
+                </div>
+                <div class="stat">
+                    <div class="label">Section</div>
+                    <div id="dSection" class="value"></div>
+                </div>
+                <div class="stat">
+                    <div class="label">Activities</div>
+                    <div id="dActivities" class="value"></div>
+                </div>
             </div>
-
-            <div x-show="classes.length > 0" class="grid gap-4">
-                <template x-for="item in classes" :key="item.ClassID">
-                    <button @click="selectClass(item)" 
-                            class="text-left w-full p-6 bg-white rounded-2xl border hover:border-orange-500 transition-all shadow-sm">
-                        <h4 class="font-bold text-slate-800" x-text="item.Class_Name"></h4>
-                        <p class="text-xs text-slate-400" x-text="item.TeacherName"></p>
-                    </button>
-                </template>
-            </div>
+            <br>
+            <div class="status-box" id="statusBox"></div>
+            <br>
+            <div id="deadlines"></div>
+            <br>
+            <button class="btn" onclick="openActivitiesModal()">View All Activities</button>
         </div>
+    </div>
+</div>
 
-        <aside class="w-full md:w-96 flex-shrink-0">
-            <div class="sticky top-28">
-                
-                <div x-show="!selectedClass" class="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl">
-                    <div class="w-16 h-16 bg-slate-100 text-orange-500 rounded-full flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"></path></svg>
-                    </div>
-                    <h3 class="font-bold text-slate-600">Select a Class</h3>
-                    <p class="text-sm mt-1">Click a class card to see a quick peek of its details.</p>
-                </div>
+<div id="activityModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Activities</h3>
+        <ul id="activityListItems" style="padding-left: 20px;"></ul>
+        <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
 
-                <div x-show="selectedClass" class="bg-white rounded-3xl border-t-4 border-orange-500 shadow-lg flex flex-col" style="display: none;">
-                    <div class="p-8 flex-1">
-                        <div class="text-center mb-6">
-                            <h3 class="text-2xl font-black text-slate-800 leading-tight" x-text="selectedClass.Class_Name"></h3>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1" x-text="selectedClass.TeacherName"></p>
-                        </div>
+<script>
+const classes = [
+    {
+        Class_Name: 'Organic Molecule Lab - Fri 10-1pm',
+        TeacherName: 'Sir Najeeb Abdulla',
+        Semester: '2026-1',
+        Section: 'A',
+        ClearanceStatus: 'Cleared',
+        activities: ['Titration Lab Report', 'Safety Quiz', 'Molecular Modeling', 'Final Practical Exam'],
+        upcoming_deadlines: [{ Title: 'Final Lab Report', Deadline: 'May 12' }]
+    },
+    {
+        Class_Name: 'Organic Molecule Lec - Tue/Fri 7-8:30amZ',
+        TeacherName: 'Maam Sarah Sapalo',
+        Semester: '2026-1',
+        Section: 'A',
+        ClearanceStatus: 'Pending',
+        activities: ['Chapter 1 Quiz', 'Synthesis Paper', 'Reaction Mechanism Homework', 'Midterm Project', 'Case Study', 'Lecture Summary'],
+        upcoming_deadlines: [{ Title: 'Reaction Mechanism Test', Deadline: 'May 05' }]
+    },
+    {
+        Class_Name: 'Systematics Lab - Mon/Thu 7-10am',
+        TeacherName: 'Maam Merlinda Elizalde',
+        Semester: '2026-1',
+        Section: 'A',
+        ClearanceStatus: 'Cleared',
+        activities: ['Specimen Collection', 'Taxonomy Chart', 'Field Report'],
+        upcoming_deadlines: []
+    },
+    {
+        Class_Name: 'Systematics Lec - Mon/Thu 11:30-1pm',
+        TeacherName: 'Maam Llara Siglos',
+        Semester: '2026-1',
+        Section: 'A',
+        ClearanceStatus: 'Cleared',
+        activities: ['Nomenclature Drill', 'Phylogenetic Tree Activity', 'Reading Reflection', 'Midterm Exam', 'Group Research', 'Concept Map', 'Attendance Quiz', 'Final Synthesis'],
+        upcoming_deadlines: [{ Title: 'Final Research Paper', Deadline: 'May 15' }]
+    },
+    {
+        Class_Name: 'Biostatistics Lab - Sat 10-1pm',
+        TeacherName: 'Sir Reymond Paragas',
+        Semester: '2026-1',
+        Section: 'A',
+        ClearanceStatus: 'Pending',
+        activities: ['Data Entry Exercise', 'SPSS Lab', 'Correlation Analysis', 'ANOVA Homework', 'Final Dataset'],
+        upcoming_deadlines: [{ Title: 'SPSS Project', Deadline: 'May 08' }]
+    },
+    {
+        Class_Name: 'Biostatistics Lec - Wed 7:30-9:30am',
+        TeacherName: 'Maam Angelyn Sanchez',
+        Semester: '2026-1',
+        Section: 'A',
+        ClearanceStatus: 'Cleared',
+        activities: ['Problem Set 1', 'Problem Set 2', 'Probability Quiz', 'Regression Analysis Worksheet', 'Final Exam'],
+        upcoming_deadlines: []
+    }
+];
 
-                        <div class="grid grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-6">
-                            <div class="text-center">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Semester</p>
-                                <p class="text-sm font-bold text-slate-700" x-text="selectedClass.Semester"></p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Section</p>
-                                <p class="text-sm font-bold text-slate-700" x-text="selectedClass.Section"></p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Activities</p>
-                                <p class="text-sm font-bold text-slate-700" x-text="selectedClass.ActivityCount"></p>
-                            </div>
-                        </div>
+// Attach activity count to classes automatically
+classes.forEach(c => c.ActivityCount = c.activities.length);
 
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Clearance Status</h4>
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-6">
-                            <template x-if="selectedClass.ClearanceStatus === 'Cleared'">
-                                <div class="flex items-center gap-3 text-emerald-600">
-                                    <div class="p-2 bg-emerald-100 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                                    <div><p class="text-sm font-bold">Cleared</p><p class="text-xs">No pending liabilities.</p></div>
-                                </div>
-                            </template>
-                            <template x-if="selectedClass.ClearanceStatus !== 'Cleared'">
-                                <div class="flex items-center gap-3 text-amber-600">
-                                    <div class="p-2 bg-amber-100 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                                    <div><p class="text-sm font-bold">Pending Clearance</p><p class="text-xs">You have unresolved items.</p></div>
-                                </div>
-                            </template>
-                        </div>
+const classList = document.getElementById("classList");
+let currentSelectedClass = null;
 
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Upcoming Deadlines</h4>
-                        <div class="space-y-3">
-                            <template x-if="!selectedClass.upcoming_deadlines || selectedClass.upcoming_deadlines.length === 0">
-                                <p class="text-center text-xs text-slate-400 italic py-4">No upcoming deadlines.</p>
-                            </template>
-                            <template x-for="deadline in selectedClass.upcoming_deadlines" :key="deadline.ActivityID">
-                                <a href="#" class="block p-4 rounded-xl bg-white border border-slate-100 hover:border-orange-300 hover:bg-orange-50 transition-colors">
-                                    <div class="flex justify-between items-center">
-                                        <p class="text-sm font-bold text-slate-700" x-text="deadline.Title"></p>
-                                        <p class="text-[10px] font-black text-red-500 uppercase" x-text="deadline.Deadline"></p>
-                                    </div>
-                                </a>
-                            </template>
-                        </div>
-                    </div>
-                    <div class="p-6 bg-slate-50/70 border-t border-slate-100">
-                        <button class="block text-center w-full py-4 bg-orange-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20">
-                            View All Activities
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    </main>
+function renderClasses() {
+    classList.innerHTML = "";
+    classes.forEach(c => {
+        const btn = document.createElement("div");
+        btn.className = "class-btn";
+        btn.innerHTML = `<b>${c.Class_Name}</b><br><small style="color:#94a3b8;">${c.TeacherName}</small>`;
+        btn.onclick = () => selectClass(c);
+        classList.appendChild(btn);
+    });
+}
 
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('myClassesApp', () => ({
-                selectedClass: null,
-                // Sample Data to test functionality
-                classes: [
-                    {
-                        ClassID: 1,
-                        Class_Name: 'Web Development',
-                        TeacherName: 'Prof. J. Doe',
-                        Semester: '2026-1',
-                        Section: 'A',
-                        ActivityCount: 12,
-                        ClearanceStatus: 'Cleared',
-                        upcoming_deadlines: [
-                            { ActivityID: 101, Title: 'Final Project', Deadline: 'May 10' }
-                        ]
-                    },
-                    {
-                        ClassID: 2,
-                        Class_Name: 'UI/UX Design',
-                        TeacherName: 'Ms. A. Smith',
-                        Semester: '2026-1',
-                        Section: 'B',
-                        ActivityCount: 8,
-                        ClearanceStatus: 'Pending',
-                        upcoming_deadlines: []
-                    }
-                ],
-                selectClass(item) {
-                    this.selectedClass = item;
-                }
-            }));
+function selectClass(c) {
+    currentSelectedClass = c;
+    document.getElementById("details").classList.add("active");
+    document.getElementById("emptyState").style.display = "none";
+
+    document.getElementById("dName").textContent = c.Class_Name;
+    document.getElementById("dTeacher").textContent = c.TeacherName;
+    document.getElementById("dSemester").textContent = c.Semester;
+    document.getElementById("dSection").textContent = c.Section;
+    document.getElementById("dActivities").textContent = c.ActivityCount;
+
+    const statusBox = document.getElementById("statusBox");
+    statusBox.innerHTML = c.ClearanceStatus === "Cleared" 
+        ? `<div class="green"><b>Cleared</b><br><small>No pending liabilities</small></div>` 
+        : `<div class="yellow"><b>Pending Clearance</b><br><small>Unresolved items</small></div>`;
+
+    const deadlines = document.getElementById("deadlines");
+    deadlines.innerHTML = "";
+    if (c.upcoming_deadlines.length === 0) {
+        deadlines.innerHTML = `<p style="color:#94a3b8; font-size:12px;">No deadlines</p>`;
+    } else {
+        c.upcoming_deadlines.forEach(d => {
+            const div = document.createElement("div");
+            div.className = "deadline";
+            div.innerHTML = `<b>${d.Title}</b><br><small style="color:red;">${d.Deadline}</small>`;
+            deadlines.appendChild(div);
         });
-    </script>
+    }
+}
+
+// Modal functions
+function openActivitiesModal() {
+    if (!currentSelectedClass) return;
+    const modal = document.getElementById("activityModal");
+    const list = document.getElementById("activityListItems");
+    const title = document.getElementById("modalTitle");
+    
+    title.textContent = currentSelectedClass.Class_Name + " Activities";
+    list.innerHTML = "";
+    currentSelectedClass.activities.forEach(act => {
+        const li = document.createElement("li");
+        li.textContent = act;
+        list.appendChild(li);
+    });
+    
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("activityModal").style.display = "none";
+}
+
+renderClasses();
+</script>
+
 </body>
 </html>

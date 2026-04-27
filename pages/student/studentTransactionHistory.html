@@ -5,152 +5,117 @@
 <title>My Slips</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
+* { box-sizing: border-box; font-family: Arial; }
 
-    body {
-        margin: 0;
-        background: #f5f6f8;
-        color: #333;
-    }
+body {
+    margin: 0;
+    background: #f5f6f8;
+}
 
-    main {
-        display: flex;
-        gap: 20px;
-        padding: 20px;
-        height: 100vh;
-    }
+main {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: 100vh;
+}
 
-    /* LEFT */
-    .left {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
+.left { flex: 1; display: flex; flex-direction: column; gap: 15px; }
 
-    h2 {
-        margin: 0;
-        font-size: 28px;
-        font-weight: 800;
-    }
+h2 { margin: 0; font-size: 28px; font-weight: 800; }
 
-    .subtitle {
-        font-size: 12px;
-        color: #888;
-    }
+.subtitle { font-size: 12px; color: #888; }
 
-    .card {
-        background: white;
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid #ddd;
-    }
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
 
-    input, select {
-        width: 100%;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        outline: none;
-    }
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
 
-    .filters {
-        display: flex;
-        gap: 10px;
-    }
+.tabs { display: flex; gap: 5px; }
 
-    .tabs {
-        display: flex;
-        gap: 5px;
-    }
+.tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #eee;
+}
 
-    .tab {
-        flex: 1;
-        padding: 10px;
-        text-align: center;
-        font-size: 11px;
-        font-weight: bold;
-        border-radius: 8px;
-        cursor: pointer;
-        background: #eee;
-    }
+.tab.active {
+    background: orange;
+    color: white;
+}
 
-    .tab.active {
-        background: orange;
-        color: white;
-    }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-    }
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+}
 
-    th, td {
-        padding: 12px;
-        border-bottom: 1px solid #eee;
-        font-size: 13px;
-    }
+th {
+    background: #fafafa;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: #888;
+}
 
-    th {
-        background: #fafafa;
-        text-transform: uppercase;
-        font-size: 11px;
-        color: #888;
-    }
+tr:hover {
+    background: #fff3e6;
+    cursor: pointer;
+}
 
-    tr:hover {
-        background: #fff3e6;
-        cursor: pointer;
-    }
+.status {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
 
-    .status {
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 10px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
+.Pending { background: #fff3cd; color: #b7791f; }
+.Approved { background: #ffe5cc; color: #ff7a00; }
+.Issued { background: #dbe7ff; color: #2f5cff; }
+.Returned { background: #dff7e5; color: #1f9d4c; }
 
-    .Approved { background: #ffe5cc; color: #ff7a00; }
-    .Issued { background: #dbe7ff; color: #2f5cff; }
-    .Returned { background: #dff7e5; color: #1f9d4c; }
+.right {
+    width: 350px;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px dashed #ccc;
+    overflow-y: auto;
+}
 
-    /* RIGHT PANEL */
-    .right {
-        width: 350px;
-        background: white;
-        border-radius: 12px;
-        padding: 15px;
-        border: 1px dashed #ccc;
-        overflow-y: auto;
-    }
+.empty {
+    text-align: center;
+    color: #aaa;
+    margin-top: 50%;
+}
 
-    .empty {
-        text-align: center;
-        color: #aaa;
-        margin-top: 50%;
-    }
-
-    .receipt h3 {
-        margin: 0 0 5px;
-    }
-
-    .small {
-        font-size: 12px;
-        color: #777;
-    }
-
-    .item {
-        padding: 8px;
-        border-bottom: 1px solid #eee;
-        font-size: 12px;
-    }
+.item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    font-size: 12px;
+}
 </style>
 </head>
 
@@ -158,108 +123,166 @@
 
 <main>
 
-    <!-- LEFT -->
-    <div class="left">
+<div class="left">
 
-        <div>
-            <h2>My Slips.</h2>
-            <div class="subtitle">A record of your borrowing history.</div>
-        </div>
-
-        <div class="card">
-            <input type="search" placeholder="Search slip, activity, purpose...">
-        </div>
-
-        <div class="tabs">
-            <div class="tab active">All</div>
-            <div class="tab">Pending</div>
-            <div class="tab">Approved</div>
-            <div class="tab">Issued</div>
-            <div class="tab">Returned</div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Activity</th>
-                    <th>Date</th>
-                    <th style="text-align:center;">Status</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <tr onclick='showReceipt({
-                    "title":"Independent Research",
-                    "date":"Apr 19, 2026",
-                    "status":"Approved",
-                    "remarks":"for something",
-                    "items":[
-                        {"name":"Beaker","qty":1},
-                        {"name":"Thermometer","qty":3}
-                    ]
-                })'>
-                    <td>Independent Research</td>
-                    <td>Apr 19, 2026</td>
-                    <td style="text-align:center;"><span class="status Approved">Approved</span></td>
-                </tr>
-
-                <tr onclick='showReceipt({
-                    "title":"Independent Research",
-                    "date":"Apr 06, 2026",
-                    "status":"Issued",
-                    "remarks":"No reason provided",
-                    "items":[
-                        {"name":"DNA Sequencer","qty":1}
-                    ]
-                })'>
-                    <td>Independent Research</td>
-                    <td>Apr 06, 2026</td>
-                    <td style="text-align:center;"><span class="status Issued">Issued</span></td>
-                </tr>
-
-            </tbody>
-        </table>
-
+    <div>
+        <h2>My Slips.</h2>
+        <div class="subtitle">A record of your borrowing history.</div>
     </div>
 
-    <!-- RIGHT -->
-    <aside class="right">
-        <div id="empty" class="empty">
-            Click on a slip to view details.
-        </div>
+    <div class="card">
+        <input id="search" placeholder="Search slip, activity, purpose...">
+    </div>
 
-        <div id="receipt" class="receipt" style="display:none;">
-            <h3 id="r-title"></h3>
-            <div class="small" id="r-date"></div>
-            <div class="small" id="r-status"></div>
-            <p class="small" id="r-remarks"></p>
+    <div class="tabs" id="tabs"></div>
 
-            <h4>Items</h4>
-            <div id="r-items"></div>
-        </div>
-    </aside>
+    <table>
+        <thead>
+            <tr>
+                <th>Activity</th>
+                <th>Date</th>
+                <th style="text-align:center;">Status</th>
+            </tr>
+        </thead>
+        <tbody id="table"></tbody>
+    </table>
+
+</div>
+
+<aside class="right">
+    <div id="empty" class="empty">Click on a slip to view details.</div>
+
+    <div id="receipt" style="display:none;">
+        <h3 id="r-title"></h3>
+        <div id="r-date"></div>
+        <div id="r-status"></div>
+        <p id="r-remarks"></p>
+
+        <h4>Items</h4>
+        <div id="r-items"></div>
+    </div>
+</aside>
 
 </main>
 
 <script>
-function showReceipt(data) {
+const slips = [
+    {
+        title: "Independent Research",
+        date: "Apr 19, 2026",
+        status: "Approved",
+        remarks: "For chemical testing",
+        items: [
+            { name: "Beaker", qty: 1 },
+            { name: "Thermometer", qty: 3 }
+        ]
+    },
+    {
+        title: "DNA Experiment",
+        date: "Apr 06, 2026",
+        status: "Issued",
+        remarks: "Genetic sequencing",
+        items: [
+            { name: "DNA Sequencer", qty: 1 }
+        ]
+    },
+    {
+        title: "Physics Lab",
+        date: "Apr 10, 2026",
+        status: "Returned",
+        remarks: "Completed activity",
+        items: [
+            { name: "Caliper", qty: 2 }
+        ]
+    },
+    {
+        title: "Chemistry Lab",
+        date: "Apr 15, 2026",
+        status: "Pending",
+        remarks: "Awaiting approval",
+        items: [
+            { name: "Test Tubes", qty: 5 }
+        ]
+    }
+];
 
+const statuses = ["All","Pending","Approved","Issued","Returned"];
+let activeStatus = "All";
+
+// DOM Elements
+const table = document.getElementById("table");
+const search = document.getElementById("search");
+const tabs = document.getElementById("tabs");
+const rTitle = document.getElementById("r-title");
+const rDate = document.getElementById("r-date");
+const rStatus = document.getElementById("r-status");
+const rRemarks = document.getElementById("r-remarks");
+const rItems = document.getElementById("r-items");
+
+statuses.forEach(s => {
+    const btn = document.createElement("div");
+    btn.className = "tab";
+    btn.innerText = s;
+
+    btn.onclick = () => {
+        activeStatus = s;
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        btn.classList.add("active");
+        render();
+    };
+
+    if (s === "All") btn.classList.add("active");
+    tabs.appendChild(btn);
+});
+
+function render() {
+    const term = search.value.toLowerCase();
+
+    const filtered = slips.filter(s =>
+        (s.title.toLowerCase().includes(term) ||
+        s.remarks.toLowerCase().includes(term)) &&
+        (activeStatus === "All" || s.status === activeStatus)
+    );
+
+    table.innerHTML = "";
+
+    filtered.forEach(slip => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${slip.title}</td>
+            <td>${slip.date}</td>
+            <td style="text-align:center;">
+                <span class="status ${slip.status}">${slip.status}</span>
+            </td>
+        `;
+
+        tr.onclick = () => showReceipt(slip);
+
+        table.appendChild(tr);
+    });
+}
+
+function showReceipt(data) {
     document.getElementById("empty").style.display = "none";
     document.getElementById("receipt").style.display = "block";
 
-    document.getElementById("r-title").innerText = data.title;
-    document.getElementById("r-date").innerText = "Date: " + data.date;
-    document.getElementById("r-status").innerText = "Status: " + data.status;
-    document.getElementById("r-remarks").innerText = "Remarks: " + (data.remarks || "None");
+    rTitle.innerText = data.title;
+    rDate.innerText = "Date: " + data.date;
+    rStatus.innerText = "Status: " + data.status;
+    rRemarks.innerText = "Remarks: " + data.remarks;
 
-    let itemsHTML = "";
+    let html = "";
     data.items.forEach(i => {
-        itemsHTML += `<div class="item">${i.name} - Qty: ${i.qty}</div>`;
+        html += `<div class="item">${i.name} - Qty: ${i.qty}</div>`;
     });
 
-    document.getElementById("r-items").innerHTML = itemsHTML;
+    rItems.innerHTML = html;
 }
+
+search.oninput = render;
+
+render();
 </script>
 
 </body>
