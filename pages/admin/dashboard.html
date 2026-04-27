@@ -1,113 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | SNHS</title>
     <link rel="stylesheet" href="../../assets/CSS/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
 
-<div class="layout">
-    <aside id="sidebar" class="sidebar">
-        <div class="logo">
-            <img src="../../assets/IMG/labflow.jpg"/>
-            <h1>Lab<span>Flow</span></h1>
+<body class="sidebar-collapsed">
+    <div class="wrapper">
+
+        <aside id="sidebar">
+            <div class="logo">
+                <img src="../../assets/IMG/labflow.jpg">
+                <div class="logo-text">Lab<span>Flow</span></div>
+            </div>
+
+            <div class="nav">
+                <div class="nav-item">Home Console</div>
+                <div class="nav-item">Inventory Hub</div>
+                <div class="nav-item">Stock Room Layout</div>
+
+                <div class="group">
+                    <button class="group-btn" data-group="history"><span>My History</span>
+                        <span class="arrow">▾</span></button>
+                    <div class="group-content" id="history">
+                        <div class="nav-item">Transaction History</div>
+                        <div class="nav-item">My Bookings</div>
+                        <div class="nav-item">My Liabilities <span class="badge">6</span></div>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <button class="group-btn" data-group="labhub"><span>Laboratory Hub</span>
+                        <span class="arrow">▾</span></button>
+                    <div class="group-content" id="labhub">
+                        <div class="nav-item">Post Lab Activity</div>
+                        <div class="nav-item">Supervised Bookings</div>
+                        <div class="nav-item">Handover Terminal</div>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <button class="group-btn" data-group="classcontrol"><span>Class Control</span>
+                        <span class="arrow">▾</span></button>
+                    <div class="group-content" id="classcontrol">
+                        <div class="nav-item">Class Registry</div>
+                        <div class="nav-item">Student Masterlist</div>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <button class="group-btn" data-group="system"><span>System mgmt</span>
+                        <span class="arrow">▾</span></button>
+                    <div class="group-content" id="system">
+                        <div class="nav-item">Register Apparatus</div>
+                        <div class="nav-item">User Management</div>
+                    </div>
+                </div>
+            </div>
+            <div class="logout">
+                <button onclick="logout()">Log Out</button>
+            </div>
+        </aside>
+
+        <div class="main">
+
+            <div class="topbar">
+                <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+                <div class="label">
+                    <div style="font-weight:800">Admin Dashboard</div>
+                    <div style="font-size:10px;color:#6b7280">CSM Laboratory</div>
+                </div>
+
+                <div class="right">
+                    <div>🔔</div>
+                    <div>🛒</div>
+
+                    <div class="profile">
+                        <div>
+                            <div style="font-size:12px;font-weight:700">Admin User</div>
+                            <div style="font-size:10px;color:#6b7280">Admin</div>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=f97316&color=fff">
+                    </div>
+                </div>
+            </div>
+
+            <div class="title">
+                <h2>Analytics Dashboard</h2>
+                <p>Click KPI cards to reorder graphs dynamically.</p>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card active" data-type="stock">📦 Total Stock</div>
+                <div class="kpi-card" data-type="users">👥 Users</div>
+                <div class="kpi-card" data-type="borrow">⏱ Borrow</div>
+                <div class="kpi-card" data-type="damage">⚠ Damages</div>
+            </div>
+
+            <div class="graph-grid">
+
+                <div class="card stock">
+                    <h3>Inventory Composition</h3>
+                    <p>Main</p><canvas id="stockMain"></canvas>
+                </div>
+                <div class="card stock">
+                    <h3>Lowest Stock Items</h3>
+                    <p>Side</p><canvas id="stockSide"></canvas>
+                </div>
+
+                <div class="card users">
+                    <h3>Class Demographics</h3>
+                    <p>Main</p><canvas id="usersMain"></canvas>
+                </div>
+                <div class="card users">
+                    <h3>User Status</h3>
+                    <p>Side</p><canvas id="usersSide"></canvas>
+                </div>
+
+                <div class="card borrow">
+                    <h3>Borrowing Activity</h3>
+                    <p>Main</p><canvas id="borrowMain"></canvas>
+                </div>
+                <div class="card borrow">
+                    <h3>Borrow Status</h3>
+                    <p>Side</p><canvas id="borrowSide"></canvas>
+                </div>
+
+                <div class="card damage">
+                    <h3>Overall Damage Status</h3>
+                    <p>Main</p><canvas id="damageMain"></canvas>
+                </div>
+                <div class="card damage">
+                    <h3>Unresolved Cases</h3>
+                    <p>Side</p><canvas id="damageSide"></canvas>
+                </div>
+
+            </div>
+
         </div>
-
-        <nav class="nav">
-
-            <a class="nav-item">Home Console</a>
-            <a class="nav-item">Inventory Hub</a>
-            <a class="nav-item">Stock Room Layout</a>
-
-            <!-- GROUP -->
-            <div class="group">
-                <button class="group-btn" data-group="history">
-                    My History
-                    <span class="arrow">⌄</span>
-                </button>
-                <div class="group-content" id="history">
-                    <a class="nav-item">Transaction History</a>
-                    <a class="nav-item">My Bookings</a>
-                    <a class="nav-item">My Liabilities <span class="badge">6</span></a>
-                </div>
-            </div>
-
-            <div class="group">
-                <button class="group-btn" data-group="labhub">
-                    Laboratory Hub
-                    <span class="arrow">⌄</span>
-                </button>
-                <div class="group-content" id="labhub">
-                    <a class="nav-item">Post Lab Activity</a>
-                    <a class="nav-item">Supervised Bookings</a>
-                    <a class="nav-item">Handover Terminal</a>
-                </div>
-            </div>
-
-            <div class="group">
-                <button class="group-btn" data-group="system">
-                    System Mgmt
-                    <span class="arrow">⌄</span>
-                </button>
-                <div class="group-content" id="system">
-                    <a class="nav-item">Register Apparatus</a>
-                    <a class="nav-item">User Management</a>
-                </div>
-            </div>
-
-        </nav>
-
-        <!-- PROFILE -->
-        <div class="profile">
-            <button id="profileBtn" class="profile-btn">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=f97316&color=fff"/>
-                <div>
-                    <p>Admin User</p>
-                    <small>Admin</small>
-                </div>
-            </button>
-
-            <div id="profileMenu" class="profile-menu">
-                <a>Open Profile</a>
-                <button>Log Out</button>
-            </div>
-        </div>
-    </aside>
-
-    <!-- MAIN -->
-    <div class="main">
-
-        <!-- HEADER -->
-        <header class="header">
-            <button id="toggleSidebar" class="menu-btn">☰</button>
-            <div>
-                <h2>Admin Dashboard</h2>
-                <small>CSM Laboratory</small>
-            </div>
-        </header>
-
-        <!-- KPI CARDS -->
-        <section class="kpis">
-            <div class="kpi-card">Total Stock<br><strong>2,450</strong></div>
-            <div class="kpi-card">Users<br><strong>450</strong></div>
-            <div class="kpi-card active">Borrow Sessions<br><strong>12</strong></div>
-            <div class="kpi-card">Damages<br><strong>3</strong></div>
-        </section>
-
-        <!-- GRAPH PLACEHOLDERS -->
-        <section class="graphs">
-            <div class="graph">Inventory Composition</div>
-            <div class="graph">Lowest Stock Items</div>
-            <div class="graph">Borrowing Activity</div>
-            <div class="graph">Damage Overview</div>
-        </section>
-
     </div>
 
-</div>
+    <script src="../../assets/JS/dashboard.js"></script>
 
-<script src="../../assets/JS/sidebar.js"></script>
 </body>
+
 </html>
