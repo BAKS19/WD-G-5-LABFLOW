@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Bookings</title>
+    <style>
+        :root { --primary: #f97316; --bg: #f3f4f6; --text-main: #1f2937; --text-muted: #6b7280; --border: #e5e7eb; }
+        body { font-family: sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 2rem; }
+        
+        .container { display: flex; gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .main-col { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; }
+        .side-col { width: 384px; }
+        
+        /* Components */
+        .card { background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .form-group { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        input, select { width: 100%; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid var(--border); background: #f9fafb; font-size: 0.875rem; }
+        
+        .tab-group { display: flex; gap: 0.5rem; padding: 0.5rem; background: white; border-radius: 1rem; border: 1px solid var(--border); }
+        .tab { flex: 1; text-align: center; padding: 0.75rem; cursor: pointer; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; border-radius: 0.75rem; color: var(--text-muted); transition: 0.3s; }
+        .tab.active { background-color: var(--primary); color: white; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 1rem; font-size: 0.75rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; background: #f9fafb; text-align: left; }
+        td { padding: 1rem; border-bottom: 1px solid #f3f4f6; cursor: pointer; }
+        tr:hover { background-color: #fff7ed; }
+        tr.active { background-color: #ffedd5; }
+
+        .badge { padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; }
+        .badge-claimed { background: #dbeafe; color: #2563eb; }
+        
+        .receipt-card { background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border); position: sticky; top: 2rem; }
+    </style>
+</head>
+<body>
+
+<main class="container">
+    <div class="main-col">
+        <header>
+            <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.05em; margin: 0;">Manage Bookings<span style="color: var(--primary);">.</span></h2>
+        </header>
+
+        <div class="card">
+            <div class="form-group">
+                <input type="text" id="search-box" placeholder="Search by Student or Item..." oninput="updateView()">
+                <select id="sort-order" onchange="updateView()">
+                    <option value="desc">Newest First</option>
+                    <option value="asc">Oldest First</option>
+                </select>
+            </div>
+            
+            <div class="tab-group" id="tab-container">
+                <div class="tab active" onclick="setFilter('All', this)">All</div>
+                <div class="tab" onclick="setFilter('Pending', this)">Pending</div>
+                <div class="tab" onclick="setFilter('Claimed', this)">Claimed</div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student / Item</th>
+                        <th>Scheduled Date</th>
+                        <th style="text-align: center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <aside class="side-col">
+        <div id="receipt-panel" class="receipt-card">
+            <div id="empty-state" style="text-align: center; color: var(--text-muted); padding: 2rem;">Click a booking to view details.</div>
+            <div id="details-content" style="display: none;">
+                <h4 style="border-bottom: 2px solid #eee; padding-bottom: 1rem;">BOOKING RECEIPT</h4>
+                <div style="font-size: 0.8rem; font-weight: bold; margin-top: 1rem;">
+                    <p>Item: <span id="d-item"></span></p>
+                    <p>Student: <span id="d-student"></span></p>
+                    <p>Date: <span id="d-date"></span></p>
+                </div>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<script>
+    // 1. Database
+    const bookings = [
+        { id: 1, student: "Mark John Ando", item: "Liquid Chromatography-Mass Spectrometry", date: "2026-04-03", time: "01:55 PM", status: "Claimed" },
+        { id: 2, student: "Jane Doe", item: "Next-Gen DNA Sequencer", date: "2026-04-01", time: "01:00 PM", status: "Pending" },
+        { id: 3, student: "Alice Smith", item: "Microscope", date: "2026-04-05", time: "10:00 AM", status: "Claimed" }
+    ];
+
+    // 2. Global State
+    let currentTab = 'All';
+
+    // 3. Logic: Filter, Sort, Render
+    function updateView() {
+        const query = document.getElementById('search-box').value.toLowerCase();
+        const sortOrder = document.getElementById('sort-order').value;
+        const tbody = document.getElementById('table-body');
+
+        // Apply Logic
+        let data = bookings.filter(b => {
+            const matchTab = (currentTab === 'All' || b.status === currentTab);
+            const matchSearch = (b.student.toLowerCase().includes(query) || b.item.toLowerCase().includes(query));
+            return matchTab && matchSearch;
+        });
+
+        // Sorting
+        data.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+        });
+
+        // Render
+        tbody.innerHTML = data.map(b => `
+            <tr onclick="selectBooking(${b.id}, this)">
+                <td><div style="font-weight: bold;">${b.student}</div><div style="font-size: 0.75rem; color: #666;">${b.item}</div></td>
+                <td style="font-size: 0.75rem;">${b.date}<br>${b.time}</td>
+                <td style="text-align: center;"><span class="badge badge-claimed">${b.status}</span></td>
+            </tr>
+        `).join('');
+    }
+
+    // 4. Interaction Handlers
+    function setFilter(status, el) {
+        currentTab = status;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        updateView();
+    }
+
+    function selectBooking(id, element) {
+        document.querySelectorAll('tr').forEach(tr => tr.classList.remove('active'));
+        element.classList.add('active');
+        
+        const b = bookings.find(x => x.id === id);
+        document.getElementById('empty-state').style.display = 'none';
+        document.getElementById('details-content').style.display = 'block';
+        document.getElementById('d-item').innerText = b.item;
+        document.getElementById('d-student').innerText = b.student;
+        document.getElementById('d-date').innerText = b.date;
+    }
+
+    // Initialize
+    updateView();
+</script>
+
+</body>
+</html>
