@@ -5,160 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Liabilities Dashboard</title>
 
-<style>
-/* Base */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f9fafb;
-    color: #111827;
-}
-
-/* Layout */
-.main {
-    display: flex;
-    gap: 30px;
-    padding: 30px;
-}
-
-.left { flex: 1; }
-.right { width: 350px; }
-
-.sidebar {
-    position: sticky;
-    top: 30px;
-    height: calc(100vh - 60px);
-}
-
-/* Header */
-h2 {
-    font-size: 32px;
-    font-weight: 800;
-}
-.orange { color: #f97316; }
-
-/* Card */
-.card {
-    background: white;
-    border-radius: 20px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    overflow: hidden;
-}
-
-/* Table */
-.table-container {
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th {
-    text-align: left;
-    font-size: 11px;
-    color: #9ca3af;
-    padding: 14px;
-    background: #f9fafb;
-    position: sticky;
-    top: 0;
-}
-
-td {
-    padding: 14px;
-    font-size: 13px;
-    border-top: 1px solid #f3f4f6;
-}
-
-tr:hover {
-    background: #fff7ed;
-    cursor: pointer;
-}
-
-tr.active {
-    background: #ffedd5;
-}
-
-/* Status */
-.status {
-    font-size: 10px;
-    font-weight: bold;
-    padding: 4px 8px;
-    border-radius: 6px;
-}
-
-.green {
-    background: #d1fae5;
-    color: #059669;
-}
-
-.yellow {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-/* Empty */
-.empty {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #94a3b8;
-    border: 2px dashed #e5e7eb;
-    border-radius: 20px;
-    text-align: center;
-    padding: 20px;
-}
-
-/* Details */
-.details {
-    display: none;
-    height: 100%;
-}
-
-.details.active {
-    display: flex;
-    flex-direction: column;
-}
-
-/* Labels */
-.label {
-    font-size: 10px;
-    font-weight: bold;
-    color: #9ca3af;
-}
-
-.value {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.box {
-    background: #f9fafb;
-    padding: 12px;
-    border-radius: 10px;
-    margin-top: 5px;
-}
-
-/* Header row */
-.details-header {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-}
-
-.close-btn {
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: #9ca3af;
-}
-</style>
+<link rel="stylesheet" href="studentMyLiabilities.css">
 </head>
 
 <body>
@@ -186,7 +33,6 @@ A record of your unresolved and settled damage reports.
 </thead>
 
 <tbody id="table"></tbody>
-
 </table>
 </div>
 
@@ -203,7 +49,7 @@ A record of your unresolved and settled damage reports.
 
 <div class="details-header">
     <h3>Case Details</h3>
-    <button class="close-btn" onclick="clearDetails()">Close</button>
+    <button class="close-btn" id="closeBtn">Close</button>
 </div>
 
 <div style="padding:20px; overflow-y:auto;">
@@ -241,103 +87,6 @@ A record of your unresolved and settled damage reports.
 
 </div>
 
-<script>
-const liabilities = [
-    {
-        damage_id: "6",
-        session_id: "121",
-        Item_Name: "Caliper",
-        damage_type: "Broken",
-        qty_damaged: "1",
-        status: "Resolved",
-        notes: "Dropped during measurement, jaw alignment is off",
-        logged_at: "Mar 21, 2026",
-        settlement_mode: "replacement",
-        ResolverName: "Admin User"
-    },
-    {
-        damage_id: "7",
-        session_id: "122",
-        Item_Name: "Beaker (250ml)",
-        damage_type: "Cracked",
-        qty_damaged: "2",
-        status: "Pending",
-        notes: "Hairline cracks found after heating experiment",
-        logged_at: "Mar 25, 2026",
-        settlement_mode: "payment",
-        ResolverName: "—"
-    },
-    {
-        damage_id: "8",
-        session_id: "123",
-        Item_Name: "Microscope",
-        damage_type: "Lens Damage",
-        qty_damaged: "1",
-        status: "Resolved",
-        notes: "Objective lens scratched due to improper cleaning",
-        logged_at: "Mar 28, 2026",
-        settlement_mode: "repair",
-        ResolverName: "Lab Technician"
-    },
-    {
-        damage_id: "9",
-        session_id: "124",
-        Item_Name: "Test Tube Rack",
-        damage_type: "Bent Frame",
-        qty_damaged: "1",
-        status: "Pending",
-        notes: "Rack deformed after being overloaded with wet glassware",
-        logged_at: "Apr 02, 2026",
-        settlement_mode: "payment",
-        ResolverName: "—"
-    }
-];
-
-const table = document.getElementById("table");
-
-function render() {
-    table.innerHTML = "";
-
-    liabilities.forEach(item => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-            <td><b>${item.Item_Name}</b><br><small>Slip #${item.session_id}</small></td>
-            <td><b>${item.damage_type}</b><br><small>Qty: ${item.qty_damaged}</small></td>
-            <td>${item.logged_at}</td>
-            <td>
-                <span class="status ${item.status === 'Resolved' ? 'green' : 'yellow'}">
-                    ${item.status}
-                </span>
-            </td>
-        `;
-
-        tr.onclick = () => selectCase(item, tr);
-
-        table.appendChild(tr);
-    });
-}
-
-function selectCase(item, row) {
-    document.querySelectorAll("tr").forEach(r => r.classList.remove("active"));
-    row.classList.add("active");
-
-    document.getElementById("details").classList.add("active");
-    document.getElementById("emptyState").style.display = "none";
-
-    dItem.textContent = item.Item_Name;
-    dNotes.textContent = item.notes;
-    dSettlement.textContent = item.settlement_mode;
-    dResolver.textContent = item.ResolverName;
-}
-
-function clearDetails() {
-    document.getElementById("details").classList.remove("active");
-    document.getElementById("emptyState").style.display = "flex";
-}
-
-render();
-</script>
-
+<script src="studentMyLiabilities.js"></script>
 </body>
 </html>

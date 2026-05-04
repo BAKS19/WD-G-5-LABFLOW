@@ -5,166 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Classes Dashboard</title>
 
-<style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f8fafc;
-    color: #0f172a;
-}
-
-/* Layout */
-.main {
-    display: flex;
-    gap: 30px;
-    padding: 30px;
-}
-
-.left { flex: 1; }
-.right { width: 360px; }
-
-/* Header */
-h2 {
-    font-size: 32px;
-    font-weight: 900;
-    text-transform: uppercase;
-    font-style: italic;
-}
-.orange { color: #ea580c; }
-
-/* Card */
-.card {
-    background: white;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-/* Class List */
-.class-list {
-    display: grid;
-    gap: 10px;
-}
-
-.class-btn {
-    text-align: left;
-    padding: 18px;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    background: white;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.class-btn:hover {
-    border-color: #f97316;
-}
-
-/* Sidebar */
-.sidebar {
-    position: sticky;
-    top: 80px;
-}
-
-/* Empty */
-.empty {
-    text-align: center;
-    padding: 40px;
-    border: 2px dashed #e2e8f0;
-    border-radius: 24px;
-    color: #94a3b8;
-}
-
-/* Details */
-.details {
-    display: none;
-}
-
-.details.active {
-    display: block;
-    border-top: 5px solid #f97316;
-}
-
-/* Stats */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 10px;
-    background: #f8fafc;
-    padding: 10px;
-    border-radius: 16px;
-}
-
-.stat {
-    text-align: center;
-}
-
-.label {
-    font-size: 10px;
-    color: #94a3b8;
-    font-weight: bold;
-}
-
-.value {
-    font-weight: bold;
-}
-
-/* Status */
-.status-box {
-    background: #f8fafc;
-    padding: 10px;
-    border-radius: 16px;
-}
-
-.green { color: #059669; }
-.yellow { color: #d97706; }
-
-/* Deadlines */
-.deadline {
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 8px;
-    transition: 0.2s;
-}
-
-.deadline:hover {
-    border-color: #fdba74;
-    background: #fff7ed;
-}
-
-/* Button */
-.btn {
-    width: 100%;
-    padding: 14px;
-    background: #f97316;
-    color: white;
-    border: none;
-    border-radius: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background: #ea580c;
-}
-
-/* Modal Styles for Activity List */
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1000; 
-    left: 0; top: 0; width: 100%; height: 100%; 
-    background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-    background-color: #fefefe;
-    margin: 10% auto; padding: 20px;
-    border: 1px solid #888;
-    width: 400px; border-radius: 20px;
-}
-</style>
+<link rel="stylesheet" href="studentMyClasses.css">
 </head>
 
 <body>
@@ -180,10 +21,13 @@ h2 {
 
     <div class="right sidebar">
         <div id="emptyState" class="empty">Select a Class</div>
+
         <div id="details" class="card details">
             <h3 id="dName"></h3>
             <p id="dTeacher" style="color:#94a3b8; font-size:12px;"></p>
+
             <br>
+
             <div class="stats">
                 <div class="stat">
                     <div class="label">Semester</div>
@@ -198,153 +42,31 @@ h2 {
                     <div id="dActivities" class="value"></div>
                 </div>
             </div>
+
             <br>
+
             <div class="status-box" id="statusBox"></div>
+
             <br>
+
             <div id="deadlines"></div>
+
             <br>
-            <button class="btn" onclick="openActivitiesModal()">View All Activities</button>
+
+            <button class="btn" id="openModalBtn">View All Activities</button>
         </div>
     </div>
 </div>
 
+<!-- MODAL -->
 <div id="activityModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Activities</h3>
         <ul id="activityListItems" style="padding-left: 20px;"></ul>
-        <button class="btn" onclick="closeModal()">Close</button>
+        <button class="btn" id="closeModalBtn">Close</button>
     </div>
 </div>
 
-<script>
-const classes = [
-    {
-        Class_Name: 'Organic Molecule Lab - Fri 10-1pm',
-        TeacherName: 'Sir Najeeb Abdulla',
-        Semester: '2026-1',
-        Section: 'A',
-        ClearanceStatus: 'Cleared',
-        activities: ['Titration Lab Report', 'Safety Quiz', 'Molecular Modeling', 'Final Practical Exam'],
-        upcoming_deadlines: [{ Title: 'Final Lab Report', Deadline: 'May 12' }]
-    },
-    {
-        Class_Name: 'Organic Molecule Lec - Tue/Fri 7-8:30amZ',
-        TeacherName: 'Maam Sarah Sapalo',
-        Semester: '2026-1',
-        Section: 'A',
-        ClearanceStatus: 'Pending',
-        activities: ['Chapter 1 Quiz', 'Synthesis Paper', 'Reaction Mechanism Homework', 'Midterm Project', 'Case Study', 'Lecture Summary'],
-        upcoming_deadlines: [{ Title: 'Reaction Mechanism Test', Deadline: 'May 05' }]
-    },
-    {
-        Class_Name: 'Systematics Lab - Mon/Thu 7-10am',
-        TeacherName: 'Maam Merlinda Elizalde',
-        Semester: '2026-1',
-        Section: 'A',
-        ClearanceStatus: 'Cleared',
-        activities: ['Specimen Collection', 'Taxonomy Chart', 'Field Report'],
-        upcoming_deadlines: []
-    },
-    {
-        Class_Name: 'Systematics Lec - Mon/Thu 11:30-1pm',
-        TeacherName: 'Maam Llara Siglos',
-        Semester: '2026-1',
-        Section: 'A',
-        ClearanceStatus: 'Cleared',
-        activities: ['Nomenclature Drill', 'Phylogenetic Tree Activity', 'Reading Reflection', 'Midterm Exam', 'Group Research', 'Concept Map', 'Attendance Quiz', 'Final Synthesis'],
-        upcoming_deadlines: [{ Title: 'Final Research Paper', Deadline: 'May 15' }]
-    },
-    {
-        Class_Name: 'Biostatistics Lab - Sat 10-1pm',
-        TeacherName: 'Sir Reymond Paragas',
-        Semester: '2026-1',
-        Section: 'A',
-        ClearanceStatus: 'Pending',
-        activities: ['Data Entry Exercise', 'SPSS Lab', 'Correlation Analysis', 'ANOVA Homework', 'Final Dataset'],
-        upcoming_deadlines: [{ Title: 'SPSS Project', Deadline: 'May 08' }]
-    },
-    {
-        Class_Name: 'Biostatistics Lec - Wed 7:30-9:30am',
-        TeacherName: 'Maam Angelyn Sanchez',
-        Semester: '2026-1',
-        Section: 'A',
-        ClearanceStatus: 'Cleared',
-        activities: ['Problem Set 1', 'Problem Set 2', 'Probability Quiz', 'Regression Analysis Worksheet', 'Final Exam'],
-        upcoming_deadlines: []
-    }
-];
-
-// Attach activity count to classes automatically
-classes.forEach(c => c.ActivityCount = c.activities.length);
-
-const classList = document.getElementById("classList");
-let currentSelectedClass = null;
-
-function renderClasses() {
-    classList.innerHTML = "";
-    classes.forEach(c => {
-        const btn = document.createElement("div");
-        btn.className = "class-btn";
-        btn.innerHTML = `<b>${c.Class_Name}</b><br><small style="color:#94a3b8;">${c.TeacherName}</small>`;
-        btn.onclick = () => selectClass(c);
-        classList.appendChild(btn);
-    });
-}
-
-function selectClass(c) {
-    currentSelectedClass = c;
-    document.getElementById("details").classList.add("active");
-    document.getElementById("emptyState").style.display = "none";
-
-    document.getElementById("dName").textContent = c.Class_Name;
-    document.getElementById("dTeacher").textContent = c.TeacherName;
-    document.getElementById("dSemester").textContent = c.Semester;
-    document.getElementById("dSection").textContent = c.Section;
-    document.getElementById("dActivities").textContent = c.ActivityCount;
-
-    const statusBox = document.getElementById("statusBox");
-    statusBox.innerHTML = c.ClearanceStatus === "Cleared" 
-        ? `<div class="green"><b>Cleared</b><br><small>No pending liabilities</small></div>` 
-        : `<div class="yellow"><b>Pending Clearance</b><br><small>Unresolved items</small></div>`;
-
-    const deadlines = document.getElementById("deadlines");
-    deadlines.innerHTML = "";
-    if (c.upcoming_deadlines.length === 0) {
-        deadlines.innerHTML = `<p style="color:#94a3b8; font-size:12px;">No deadlines</p>`;
-    } else {
-        c.upcoming_deadlines.forEach(d => {
-            const div = document.createElement("div");
-            div.className = "deadline";
-            div.innerHTML = `<b>${d.Title}</b><br><small style="color:red;">${d.Deadline}</small>`;
-            deadlines.appendChild(div);
-        });
-    }
-}
-
-// Modal functions
-function openActivitiesModal() {
-    if (!currentSelectedClass) return;
-    const modal = document.getElementById("activityModal");
-    const list = document.getElementById("activityListItems");
-    const title = document.getElementById("modalTitle");
-    
-    title.textContent = currentSelectedClass.Class_Name + " Activities";
-    list.innerHTML = "";
-    currentSelectedClass.activities.forEach(act => {
-        const li = document.createElement("li");
-        li.textContent = act;
-        list.appendChild(li);
-    });
-    
-    modal.style.display = "block";
-}
-
-function closeModal() {
-    document.getElementById("activityModal").style.display = "none";
-}
-
-renderClasses();
-</script>
-
+<script src="studentMyClasses.js"></script>
 </body>
 </html>
