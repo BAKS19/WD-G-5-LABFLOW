@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,49 +6,16 @@
 <title>Inventory Hub</title>
 
 <style>
-/* ===== GLOBAL ===== */
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     background: #f5f6f8;
-    margin: 0;
-    padding: 30px;
+    padding: 20px;
 }
 
-/* ===== HEADER ===== */
-.header {
-    margin-bottom: 25px;
-}
-.title {
-    font-size: 32px;
-    font-weight: 800;
-    color: #1f2937;
-}
-.subtitle {
-    font-size: 13px;
-    color: #6b7280;
-}
+/* HEADER */
+.title { font-size: 28px; font-weight: bold; }
 
-/* ===== SEARCH ===== */
-.search-wrapper {
-    position: relative;
-    margin: 20px 0;
-}
-.search-input {
-    width: 100%;
-    padding: 14px 20px 14px 45px;
-    border-radius: 18px;
-    border: 2px solid #f1f5f9;
-    outline: none;
-    font-size: 14px;
-    transition: 0.3s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-.search-input:focus {
-    border-color: rgba(249,115,22,0.5);
-    box-shadow: 0 0 0 4px rgba(249,115,22,0.1);
-}
-
-/* ===== LAYOUT ===== */
+/* LAYOUT */
 .main {
     display: flex;
     gap: 20px;
@@ -57,311 +25,186 @@ body {
 .grid {
     flex: 2;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    gap: 15px;
 }
 
-/* ===== ITEM CARD ===== */
+/* CARD */
 .item-card {
     background: white;
-    padding: 20px;
-    border-radius: 18px;
-    border: 1px solid #e5e7eb;
-    cursor: grab;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
+    padding: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid #ddd;
 }
-.item-card:hover {
-    transform: translateY(-6px);
-    border-color: orange;
-    box-shadow: 0 15px 25px rgba(0,0,0,0.08);
-}
-.item-card.active {
-    border-color: orange;
-    box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
-}
-.item-card.dragging {
-    opacity: 0.5;
-    transform: scale(0.95);
-}
+.item-card:hover { border-color: orange; }
 
-/* IMAGE */
-.image-box {
-    position: relative;
-}
-.image-box img {
-    height: 110px;
-    object-fit: contain;
-    display: block;
-    margin: auto;
-    margin-bottom: 18px;
-    transition: 0.4s;
-}
-.item-card:hover img {
-    transform: scale(1.1);
-}
-
-/* CATEGORY BADGE */
-.category {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #f3f4f6;
-    color: #555;
-    font-size: 10px;
-    font-weight: bold;
-    padding: 4px 7px;
-    border-radius: 999px;
-    transition: 0.3s;
-}
-.item-card:hover .category {
-    background: #fff7ed;
-    color: orange;
-}
-
-/* NAME */
-.item-name {
-    text-align: center;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #1f2937;
-}
-.item-card:hover .item-name {
-    color: #f97316;
-}
-
-/* ===== STATS ===== */
-.stats {
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid #f1f5f9;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.stat-value {
-    font-size: 20px;
-    font-weight: 900;
-}
-.highlight {
-    color: #f97316;
-}
-.muted {
-    color: #4b5563;
-}
-.unit {
-    font-size: 13px;
-}
-
-.stat-label {
-    font-size: 10px;
-    color: #9ca3af;
-    text-transform: uppercase;
-}
-
-.divider {
-    width: 1px;
-    height: 30px;
-    background: #e5e7eb;
-}
-
-/* ===== DROP ZONE ===== */
-.drop-zone {
+/* FORM */
+.form-box {
     flex: 1;
     background: white;
-    border: 2px dashed #e5e7eb;
-    border-radius: 18px;
-    padding: 30px;
+    padding: 20px;
+    border-radius: 12px;
+}
+.form-box input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+}
+.form-box button {
+    width: 100%;
+    padding: 10px;
+    background: orange;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* DROP */
+.drop-zone {
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px dashed #ccc;
     text-align: center;
-    transition: 0.3s;
-}
-
-.drop-zone.drag-over {
-    border-color: orange;
-    background: #fff7ed;
-}
-
-.drop-icon {
-    width: 60px;
-    height: 60px;
-    margin: auto;
-    background: #f3f4f6;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: orange;
-    margin-bottom: 15px;
-    transition: 0.3s;
-}
-
-.drop-zone.drag-over .drop-icon {
-    transform: scale(1.1);
-}
-
-/* TEXT */
-.drop-title {
-    font-weight: bold;
-    color: #4b5563;
-}
-.drop-desc {
-    font-size: 13px;
-    color: #9ca3af;
+    border-radius: 12px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-    <div class="title">Inventory Hub</div>
-    <div class="subtitle">Laboratory apparatus and equipment</div>
-</div>
+<h2 class="title">Inventory Hub</h2>
 
-<!-- SEARCH -->
-<div class="search-wrapper">
-    <input id="searchInput" class="search-input" placeholder="Search by name or category...">
-</div>
+<input id="searchInput" placeholder="Search..." />
 
-<!-- MAIN -->
 <div class="main">
 
     <!-- ITEMS -->
     <div id="itemContainer" class="grid"></div>
 
-    <!-- DROP ZONE -->
-    <div id="dropZone" class="drop-zone">
-        <div class="drop-icon">📦</div>
-        <h3 id="dzTitle" class="drop-title">Select an Item</h3>
-        <p id="dzDesc" class="drop-desc">Click or drag an item here</p>
+    <!-- RIGHT PANEL -->
+    <div>
+
+        <!-- FORM -->
+        <div class="form-box">
+            <h3>Add Item</h3>
+
+            <input id="name" placeholder="Item name">
+            <input id="category" placeholder="Category">
+            <input id="available" type="number" placeholder="Available qty">
+            <input id="total" type="number" placeholder="Total qty">
+            <input id="image" placeholder="Image URL">
+
+            <button onclick="addItem()">Add Item</button>
+        </div>
+
+        <!-- DROP ZONE -->
+        <div id="dropZone" class="drop-zone">
+            <h3 id="dzTitle">Select Item</h3>
+            <p id="dzDesc">Details will show here</p>
+        </div>
+
     </div>
 
 </div>
 
 <script>
 
-/* ===== DATA (8 ITEMS) ===== */
-const items = [
-{ id:1,name:"Beaker",category:"Glassware",available:15,total:20,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Beaker_100ml.jpg/200px-Beaker_100ml.jpg"},
-{ id:2,name:"Test Tube",category:"Glassware",available:40,total:50,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Test_tubes_in_rack.jpg/200px-Test_tubes_in_rack.jpg"},
-{ id:3,name:"Thermometer",category:"Measuring",available:10,total:12,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Thermometer.jpg/200px-Thermometer.jpg"},
-{ id:4,name:"Bunsen Burner",category:"Heating",available:5,total:8,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Bunsen_burner.jpg/200px-Bunsen_burner.jpg"},
-{ id:5,name:"Erlenmeyer Flask",category:"Glassware",available:12,total:18,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Erlenmeyer_flask.jpg/200px-Erlenmeyer_flask.jpg"},
-{ id:6,name:"Graduated Cylinder",category:"Measuring",available:9,total:15,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Graduated_cylinder.jpg/200px-Graduated_cylinder.jpg"},
-{ id:7,name:"Petri Dish",category:"Biology",available:30,total:40,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Petri_dish.jpg/200px-Petri_dish.jpg"},
-{ id:8,name:"Dropper Pipette",category:"Measuring",available:25,total:35,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Pipette.jpg/200px-Pipette.jpg"}
+/* DATA */
+let items = [
+{ id:1,name:"Beaker",category:"Glassware",available:15,total:20,unit:"pcs",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Beaker_100ml.jpg/200px-Beaker_100ml.jpg"}
 ];
 
-let selectedItem = null;
-let draggingId = null;
+/* ELEMENTS */
+const container = document.getElementById("itemContainer");
+const dropTitle = document.getElementById("dzTitle");
+const dropDesc = document.getElementById("dzDesc");
 
-/* ===== FORMAT ===== */
-const formatQty = n => Number(n).toFixed(3);
-
-/* ===== RENDER ===== */
-function render(data){
-    const container = document.getElementById("itemContainer");
+/* RENDER */
+function render(list){
     container.innerHTML = "";
 
-    data.forEach(item=>{
+    list.forEach(item=>{
         const card = document.createElement("div");
         card.className = "item-card";
         card.draggable = true;
 
-        if(selectedItem?.id === item.id) card.classList.add("active");
-        if(draggingId === item.id) card.classList.add("dragging");
-
         card.innerHTML = `
-            <div class="image-box">
-                <img src="${item.img}" onerror="this.src='https://via.placeholder.com/100'">
-                <span class="category">${item.category}</span>
-            </div>
-
-            <div class="item-name">${item.name}</div>
-
-            <div class="stats">
-                <div>
-                    <div class="stat-value highlight">${formatQty(item.available)} <span class="unit">${item.unit}</span></div>
-                    <div class="stat-label">Available</div>
-                </div>
-
-                <div class="divider"></div>
-
-                <div>
-                    <div class="stat-value muted">${formatQty(item.total)} <span class="unit">${item.unit}</span></div>
-                    <div class="stat-label">Total</div>
-                </div>
-            </div>
+            <img src="${item.img}" width="80"><br>
+            <b>${item.name}</b><br>
+            ${item.category}<br>
+            ${item.available}/${item.total}
         `;
 
-        card.onclick = ()=>{
-            selectedItem = item;
-            showDetails(item);
-            render(data);
-        };
+        card.onclick = ()=> showDetails(item);
 
         card.ondragstart = e=>{
-            draggingId = item.id;
-            e.dataTransfer.setData("text", JSON.stringify(item));
-            render(data);
-        };
-
-        card.ondragend = ()=>{
-            draggingId = null;
-            render(data);
+            e.dataTransfer.setData("id", item.id);
         };
 
         container.appendChild(card);
     });
 }
 
-/* ===== DROP ZONE ===== */
+/* ADD ITEM */
+function addItem(){
+    const name = document.getElementById("name").value;
+    const category = document.getElementById("category").value;
+    const available = document.getElementById("available").value;
+    const total = document.getElementById("total").value;
+    const image = document.getElementById("image").value;
+
+    if(!name || !category) return alert("Fill required fields");
+
+    const newItem = {
+        id: Date.now(),
+        name,
+        category,
+        available: Number(available),
+        total: Number(total),
+        unit:"pcs",
+        img: image || "https://via.placeholder.com/100"
+    };
+
+    items.push(newItem);
+    render(items);
+
+    // clear form
+    document.getElementById("name").value = "";
+    document.getElementById("category").value = "";
+    document.getElementById("available").value = "";
+    document.getElementById("total").value = "";
+    document.getElementById("image").value = "";
+}
+
+/* DETAILS */
+function showDetails(item){
+    dropTitle.textContent = item.name;
+    dropDesc.textContent = `${item.category} • ${item.available}/${item.total}`;
+}
+
+/* DROP */
 const dropZone = document.getElementById("dropZone");
 
-dropZone.ondragover = e => e.preventDefault();
-dropZone.ondragenter = ()=> dropZone.classList.add("drag-over");
-dropZone.ondragleave = ()=> dropZone.classList.remove("drag-over");
+dropZone.ondragover = e=> e.preventDefault();
 
 dropZone.ondrop = e=>{
-    e.preventDefault();
-    dropZone.classList.remove("drag-over");
-
-    const item = JSON.parse(e.dataTransfer.getData("text"));
-    selectedItem = item;
-    showDetails(item);
+    const id = e.dataTransfer.getData("id");
+    const item = items.find(i=>i.id == id);
+    if(item) showDetails(item);
 };
 
-/* ===== DETAILS ===== */
-function showDetails(item){
-    document.getElementById("dzTitle").textContent = item.name;
-    document.getElementById("dzDesc").textContent =
-        `${item.category} • ${item.available}/${item.total} ${item.unit}`;
-}
-
-/* ===== SEARCH ===== */
-const searchInput = document.getElementById("searchInput");
-
-function debounce(fn, delay){
-    let t;
-    return (...args)=>{
-        clearTimeout(t);
-        t = setTimeout(()=>fn(...args), delay);
-    };
-}
-
-searchInput.addEventListener("input", debounce(()=>{
-    const q = searchInput.value.toLowerCase();
+/* SEARCH */
+document.getElementById("searchInput").addEventListener("input", e=>{
+    const val = e.target.value.toLowerCase();
 
     const filtered = items.filter(i =>
-        i.name.toLowerCase().includes(q) ||
-        i.category.toLowerCase().includes(q)
+        i.name.toLowerCase().includes(val) ||
+        i.category.toLowerCase().includes(val)
     );
 
     render(filtered);
-},300));
+});
 
 /* INIT */
 render(items);
@@ -370,3 +213,4 @@ render(items);
 
 </body>
 </html>
+```
