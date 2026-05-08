@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Dashboard</title>
+    <link rel="stylesheet" href="classRegister.css">
+</head>
+<body>
+
+    <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="brand">
+                <h2>User & Class <span class="accent">Registry.</span></h2>
+                <p>Manage users, classes, and student enrollment.</p>
+            </div>
+            <div class="header-right">
+                <button onclick="toggleModal('classModal')" class="btn-primary-top">Create New Class</button>
+                <div class="search-container">
+                    <input type="text" id="classSearch" onkeyup="filterClasses()" placeholder="Search classes...">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- Grid -->
+        <div id="classGrid" class="class-grid">
+            <!-- The Dash Card (Always First) -->
+            <button onclick="toggleModal('classModal')" class="card-create-dash">
+                <div class="icon-box-orange">
+                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+                <span class="label-tiny">CREATE NEW CLASS</span>
+            </button>
+
+            <!-- Cards will be injected here by script.js -->
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="classModal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <h3>Add New Class</h3>
+            <div class="input-stack">
+                <input type="text" id="inpName" placeholder="Class Name (e.g. Microbiology)">
+                <input type="text" id="inpCode" placeholder="Section (e.g. BSBIO-3)">
+                <select id="inpSem">
+                    <option value="1st Semester">1st Semester</option>
+                    <option value="2nd Semester">2nd Semester</option>
+                </select>
+            </div>
+            <div class="modal-btns">
+                <button onclick="toggleModal('classModal')" class="btn-cancel">Cancel</button>
+                <button onclick="addNewClass()" class="btn-save">Create Class</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="classRegister.js"></script>
+</body>
+</html>
