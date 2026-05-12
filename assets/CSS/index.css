@@ -221,6 +221,7 @@ body {
 }
 
 .hero-image img {
+  height: 500px;
   width: 100%;
   border-radius: 40px;
   border: 8px solid white;
@@ -1198,4 +1199,206 @@ button:hover {
 
 .switch-account:hover {
   color: #b91c1c;
+}
+
+.for-pass {
+  display: flex;
+  justify-content: space-between;
+}
+
+.for-pass a {
+  font-size: 14px;
+  color: black;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.for-pass label {
+  font-size: 14px;
+  color: black;
+  font-weight: 600;
+}
+
+
+/*legal information*/
+.modal-overlay2 {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 999;
+}
+
+.modal-overlay2.active {
+  display: flex;
+}
+
+.modal2 {
+  position: relative;
+  width: 100%;
+  max-width: 64rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  padding: 32px;
+  transform: scale(0.95);
+  opacity: 0;
+  animation: zoomIn 0.25s forwards;
+}
+
+@keyframes zoomIn {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.close-btn2 {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.close-btn2:hover {
+  color: #64748b;
+}
+
+.close-btn2 svg {
+  width: 22px;
+  height: 22px;
+}
+
+.modal2 h3 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 24px;
+}
+
+.tabs2 {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.tab-wrapper2 {
+  position: relative;
+  display: inline-flex;
+  background: #f1f5f9;
+  padding: 6px;
+  border-radius: 999px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.tab-indicator2 {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  height: calc(100% - 12px);
+  width: calc(50% - 6px);
+  background: #be123c;
+  border-radius: 999px;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.tab-btn2 {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 2;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-btn2.active {
+  color: #fff;
+}
+
+.tab-btn2.inactive {
+  color: #64748b;
+}
+
+.tab-btn2.inactive:hover {
+  color: #334155;
+}
+
+.tab-content2 {
+  font-size: 13px;
+  color: #64748b;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  line-height: 1.6;
+}
+
+
+h4 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+h5 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #334155;
+  margin-top: 16px;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+.small-muted2 {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.disclaimer {
+  margin-top: 20px;
+  padding: 12px;
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #9a3412;
+}
+
+.footer-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #f1f5f9;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.footer-btn:hover {
+  background: #e2e8f0;
 }

@@ -5,31 +5,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | SNHS</title>
-    <link rel="stylesheet" href="../../assets/CSS/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/CSS/admin/dashboard.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="sidebar-collapsed">
     <div class="wrapper">
 
-        <aside id="sidebar">
+        <aside id="sidebar" class="sidebar">
             <div class="logo">
                 <img src="../../assets/IMG/labflow.jpg">
                 <div class="logo-text">Lab<span>Flow</span></div>
             </div>
 
             <div class="nav">
-                <div class="nav-item">Home Console</div>
-                <div class="nav-item">Inventory Hub</div>
-                <div class="nav-item">Stock Room Layout</div>
+                <div class="nav-item" data-page="analytics">Home Console</div>
+                <div class="nav-item" data-page="inventory">Inventory Hub</div>
+                <div class="nav-item" data-page="stockRoom">Stock Room Layout</div>
 
                 <div class="group">
                     <button class="group-btn" data-group="history"><span>My History</span>
                         <span class="arrow">▾</span></button>
                     <div class="group-content" id="history">
-                        <div class="nav-item">Transaction History</div>
-                        <div class="nav-item">My Bookings</div>
-                        <div class="nav-item">My Liabilities <span class="badge">6</span></div>
+                        <div class="nav-item" data-page="histTransaction">Transaction History</div>
+                        <div class="nav-item" data-page="booking"> My Bookings</div>
+                        <div class="nav-item" data-page="liability">My Liabilities <span class="badge">6</span></div>
                     </div>
                 </div>
 
@@ -37,9 +37,11 @@
                     <button class="group-btn" data-group="labhub"><span>Laboratory Hub</span>
                         <span class="arrow">▾</span></button>
                     <div class="group-content" id="labhub">
-                        <div class="nav-item">Post Lab Activity</div>
-                        <div class="nav-item">Supervised Bookings</div>
-                        <div class="nav-item">Handover Terminal</div>
+                        <div class="nav-item" data-page="postLab">Post Lab Activity</div>
+                        <div class="nav-item" data-page="SBooking">Supervised Bookings</div>
+                        <div class="nav-item" data-page="handOver">Handover Terminal</div>
+                        <div class="nav-item" data-page="settleReview">Settlement Reviews</div>
+                        <div class="nav-item" data-page="clearHub">Clearance Hub</div>
                     </div>
                 </div>
 
@@ -47,8 +49,8 @@
                     <button class="group-btn" data-group="classcontrol"><span>Class Control</span>
                         <span class="arrow">▾</span></button>
                     <div class="group-content" id="classcontrol">
-                        <div class="nav-item">Class Registry</div>
-                        <div class="nav-item">Student Masterlist</div>
+                        <div class="nav-item" data-page="classRegistry">Class Registry</div>
+                        <div class="nav-item" data-page="masterlist">Student Masterlist</div>
                     </div>
                 </div>
 
@@ -56,14 +58,30 @@
                     <button class="group-btn" data-group="system"><span>System mgmt</span>
                         <span class="arrow">▾</span></button>
                     <div class="group-content" id="system">
-                        <div class="nav-item">Register Apparatus</div>
-                        <div class="nav-item">User Management</div>
+                        <div class="nav-item" data-page="registerItem">Register Apparatus</div>
+                        <div class="nav-item" data-page="userMnmt">User Management</div>
                     </div>
                 </div>
-            </div>
-            <div class="logout">
-                <button onclick="logout()">Log Out</button>
-            </div>
+                <div class="sidebar-bottom">
+
+                    <button class="group-btn" data-group="profile">
+                        <div class="user-left">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=f97316&color=fff">
+                            <div>
+                                <div class="user-name">Admin User</div>
+                                <div class="user-role">Admin</div>
+                            </div>
+                        </div>
+                        <span class="arrow user-arrow">▾</span>
+                    </button>
+
+
+                    <div class="group-content" id="profile">
+                        <div class="nav-item" data-page="userProfile">User Profile</div>
+                        <button class="logout-btn" onclick="logout()">Log Out</button>
+                    </div>
+
+                </div>
         </aside>
 
         <div class="main">
@@ -72,8 +90,8 @@
                 <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
                 <div class="label">
-                    <div style="font-weight:800">Admin Dashboard</div>
-                    <div style="font-size:10px;color:#6b7280">CSM Laboratory</div>
+                    <div class="title1" id="topbarTitle">Admin Dashboard</div>
+                    <div class="title2">CSM Laboratory</div>
                 </div>
 
                 <div class="right">
@@ -82,68 +100,1502 @@
 
                     <div class="profile">
                         <div>
-                            <div style="font-size:12px;font-weight:700">Admin User</div>
-                            <div style="font-size:10px;color:#6b7280">Admin</div>
+                            <div class="user-name">Admin User</div>
+                            <div class="user-role">Admin</div>
                         </div>
                         <img src="https://ui-avatars.com/api/?name=Admin+User&background=f97316&color=fff">
                     </div>
                 </div>
             </div>
 
-            <div class="title">
-                <h2>Analytics Dashboard</h2>
-                <p>Click KPI cards to reorder graphs dynamically.</p>
+            <div class="container" id="analyticsPage">
+                <div class="title">
+                    <h2>Analytics <span>Dashboard</span></h2>
+                    <p>Click KPI cards to reorder graphs dynamically.</p>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card active" data-type="stock">📦 Total Stock</div>
+                    <div class="kpi-card" data-type="users">👥 Users</div>
+                    <div class="kpi-card" data-type="borrow">⏱ Borrow</div>
+                    <div class="kpi-card" data-type="damage">⚠ Damages</div>
+                </div>
+
+                <div class="graph-grid">
+
+                    <div class="card analytics-card stock">
+                        <h3>Inventory Composition</h3>
+                        <p>Main</p><canvas id="stockMain"></canvas>
+                    </div>
+                    <div class="card analytics-card stock">
+                        <h3>Lowest Stock Items</h3>
+                        <p>Side</p><canvas id="stockSide"></canvas>
+                    </div>
+
+                    <div class="card analytics-card users">
+                        <h3>Class Demographics</h3>
+                        <p>Main</p><canvas id="usersMain"></canvas>
+                    </div>
+                    <div class="card analytics-card users">
+                        <h3>User Status</h3>
+                        <p>Side</p><canvas id="usersSide"></canvas>
+                    </div>
+
+                    <div class="card analytics-card borrow">
+                        <h3>Borrowing Activity</h3>
+                        <p>Main</p><canvas id="borrowMain"></canvas>
+                    </div>
+                    <div class="card analytics-card borrow">
+                        <h3>Borrow Status</h3>
+                        <p>Side</p><canvas id="borrowSide"></canvas>
+                    </div>
+
+                    <div class="card analytics-card damage">
+                        <h3>Overall Damage Status</h3>
+                        <p>Main</p><canvas id="damageMain"></canvas>
+                    </div>
+                    <div class="card analytics-card damage">
+                        <h3>Unresolved Cases</h3>
+                        <p>Side</p><canvas id="damageSide"></canvas>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="kpi-grid">
-                <div class="kpi-card active" data-type="stock">📦 Total Stock</div>
-                <div class="kpi-card" data-type="users">👥 Users</div>
-                <div class="kpi-card" data-type="borrow">⏱ Borrow</div>
-                <div class="kpi-card" data-type="damage">⚠ Damages</div>
+            <div class="container" id="inventoryPage">
+                <div class="title">
+                    <h2>Inventory <span>Hub</span></h2>
+                    <p>Laboratory apparatus and equipment</p>
+                </div>
+
+                <input id="searchInput" placeholder="Search..." />
+
+                <div class="inventoryMain">
+
+                    <div id="itemContainer" class="inventory-gid"></div>
+
+                    <div>
+
+                        <div class="form-box-invent">
+                            <h3>Add Item</h3>
+
+                            <input id="Iname" placeholder="Item name">
+                            <input id="Icategory" placeholder="Category">
+                            <input id="Iavailable" type="number" placeholder="Available qty">
+                            <input id="Itotal" type="number" placeholder="Total qty">
+                            <input id="Iimage" placeholder="Image URL">
+
+                            <button onclick="addItem()">Add Item</button>
+                        </div>
+
+                        <div id="dropZone" class="drop-zone">
+                            <h3 id="dzTitle">Select Item</h3>
+                            <p id="dzDesc">Details will show here</p>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
 
-            <div class="graph-grid">
+            <div class="container" id="stockRoomPage">
+                <div class="grid-2">
 
-                <div class="card stock">
-                    <h3>Inventory Composition</h3>
-                    <p>Main</p><canvas id="stockMain"></canvas>
+                     <aside class="stock-sidebar">
+
+                        <h3 id="sideTitle">ALL ITEMS</h3>
+
+                        <select id="categoryFilter">
+                            <option value="All">All Categories</option>
+                            <option value="Chemicals">Chemicals</option>
+                            <option value="Glassware">Glassware</option>
+                            <option value="Equipment">Equipment</option>
+                        </select>
+
+                        <input id="searchApparatus" class="stock-search" placeholder="Search apparatus..." />
+
+                        <div id="itemList"></div>
+                    </aside>
+
+                     <div class="stock-main">
+
+                        <div class="title">
+                            <h2>Stock Room <span>Layout</span></h2>
+                            <p>Click shelf or item to filter • Click same shelf again to reset</p>
+                        </div>
+
+                        <div class="map-wrap">
+                            <svg id="map" viewBox="0 0 1100 520">
+                                <g id="shelves"></g>
+                            </svg>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="card stock">
-                    <h3>Lowest Stock Items</h3>
-                    <p>Side</p><canvas id="stockSide"></canvas>
+            </div>
+
+            <div class="container" id="historyTransactionPage">
+                <div class="hist-main">
+
+                    <div class="hist-left">
+
+                        <div class="title">
+                            <h2>Handled <span>Slips.</span></h2>
+                            <p>A record of slips you have approved or processed.</p>
+                        </div>
+
+
+                         <div class="hist-card tabs">
+                            <div class="tab active" onclick="setTab(this,'handled')">Handled Transactions</div>
+                            <div class="tab" onclick="setTab(this,'personal')">My Personal Slips</div>
+                        </div>
+
+                         <div class="hist-card hist-filter">
+                            <div class="hist-filter-grid">
+                                <div>
+                                    <label>Search</label>
+                                    <input type="text" id="searchInput" onkeyup="filterTable()"
+                                        placeholder="Slip # or Name">
+                                </div>
+                                <div>
+                                    <label>Sort</label>
+                                    <select onchange="filterTable()">
+                                        <option>Newest</option>
+                                        <option>Oldest</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="hist-card table-wrapper">
+                            <table id="slipTable">
+                                <thead>
+                                    <tr>
+                                        <th>Student / Slip #</th>
+                                        <th>Activity</th>
+                                        <th>Date</th>
+                                        <th style="text-align:center;">Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr onclick="showReceipt(this)" data-name="Mark John Ando" data-slip="#151"
+                                        data-status="Issued" data-items="Bleach Solution, Adapter">
+                                        <td>
+                                            <div class="bold">Mark John Ando</div>
+                                            <div class="small">#151</div>
+                                        </td>
+                                        <td>
+                                            <div class="bold">Independent Research</div>
+                                        </td>
+                                        <td class="small">Apr 27, 2026</td>
+                                        <td style="text-align:center;"><span class="status issued">Issued</span></td>
+                                    </tr>
+
+                                    <tr onclick="showReceipt(this)" data-name="Mark John Ando" data-slip="#145"
+                                        data-status="Issued" data-items="DNA Sequencer">
+                                        <td>
+                                            <div class="bold">Mark John Ando</div>
+                                            <div class="small">#145</div>
+                                        </td>
+                                        <td>
+                                            <div class="bold">Independent Research</div>
+                                        </td>
+                                        <td class="small">Apr 06, 2026</td>
+                                        <td style="text-align:center;"><span class="status issued">Issued</span></td>
+                                    </tr>
+
+                                    <tr onclick="showReceipt(this)" data-name="Admin User" data-slip="#144"
+                                        data-status="Returned" data-items="Beaker">
+                                        <td>
+                                            <div class="bold">Admin User</div>
+                                            <div class="small">#144</div>
+                                        </td>
+                                        <td>
+                                            <div class="bold">Independent Research</div>
+                                        </td>
+                                        <td class="small">Apr 06, 2026</td>
+                                        <td style="text-align:center;"><span class="status returned">Returned</span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                         <div class="hist-card pagination">
+                            <button class="btn3">Prev</button>
+                            <div>Page 1 of 2</div>
+                            <button class="btn3">Next</button>
+                        </div>
+
+                    </div>
+
+                     <div class="hist-right">
+
+                        <div id="hist-empty" class="hist-panel">
+                            Click a slip to view details
+                        </div>
+
+                        <div id="receipt" class="hist-card receipt">
+                            <h3 id="r-name"></h3>
+                            <div class="small" id="r-slip"></div>
+                            <div style="margin-top:10px;" id="r-items"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="container" id="bookingPage">
+                <div>
+
+                    <div class="book-left">
+
+                        <div class="title">
+                            <h2>My <span>Bookings.</span></h2>
+                        </div>
+
+
+                        <div class="book-card">
+                            <input id="book-search" placeholder="Search...">
+                            <br><br>
+                            <select id="sort">
+                                <option value="desc">Newest First</option>
+                                <option value="asc">Oldest First</option>
+                            </select>
+                        </div>
+
+                        <div class="book-card filters" id="filters"></div>
+
+                        <div class="book-card booking-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item / Purpose</th>
+                                        <th>Supervisor</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="book-table"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="book-right">
+
+                        <div class="book-card">
+                            <div id="book-empty" class="book-empty">Click a booking</div>
+
+                            <div id="details" class="details">
+                                <h3>Booking Details</h3>
+
+                                <p class="label5">Item</p>
+                                <p class="value" id="dItem"></p>
+
+                                <p class="label5">Purpose</p>
+                                <p id="dPurpose"></p>
+
+                                <p class="label5">Supervisor</p>
+                                <p id="dSupervisor"></p>
+
+                                <p class="label5">Status</p>
+                                <p id="dStatus"></p>
+
+                                <button class="close-btn" id="closeBtn">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="container" id="liabilityPage">
+                <div class="lia-left">
+
+                    <div class="title">
+                        <h2>My <span>Liabilities.</span></h2>
+                        <p>
+                            A record of your unresolved and settled damage reports.
+                        </p>
+                    </div>
+
+
+
+                    <div class="lia-card lia-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Damage</th>
+                                    <th>Date Logged</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="lia-table"></tbody>
+                        </table>
+                    </div>
+
                 </div>
 
-                <div class="card users">
-                    <h3>Class Demographics</h3>
-                    <p>Main</p><canvas id="usersMain"></canvas>
+                <div class="lia-right">
+
+                    <div id="emptyState" class="lia-empty">
+                        <h3>Select a Case</h3>
+                        <p>Click a row to view details</p>
+                    </div>
+
+                    <div id="lia-details" class="lia-card details">
+
+                        <div class="details-header">
+                            <h3>Case Details</h3>
+                            <button class="close-btn" id="closeBtn">Close</button>
+                        </div>
+
+                        <div style="padding:20px; overflow-y:auto;">
+
+                            <div>
+                                <div class="label6">Item Name</div>
+                                <div id="dItem" class="value"></div>
+                            </div>
+
+                            <br>
+
+                            <div>
+                                <div class="label6">Damage Notes</div>
+                                <div id="dNotes" class="box"></div>
+                            </div>
+
+                            <br>
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                <div>
+                                    <div class="label6">Settlement</div>
+                                    <div id="dSettlement" class="value"></div>
+                                </div>
+                                <div>
+                                    <div class="label6">Resolver</div>
+                                    <div id="dResolver" class="value"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="card users">
-                    <h3>User Status</h3>
-                    <p>Side</p><canvas id="usersSide"></canvas>
+            </div>
+
+            <div class="container" id="postLabPage">
+                <header>
+                    <div class="title">
+                        <h1>Create New Activity<span>.</span></h1>
+                        <p>Build and configure a new lab activity for your classes.</p>
+                    </div>
+
+                </header>
+
+                <div class="content-wrapper">
+                    <section class="form-card">
+                        <nav class="stepper2">
+                            <div class="step1 active" id="stepIndicator1"><span>Step 1</span><br>Resources</div>
+                            <div class="step1" id="stepIndicator2"><span>Step 2</span><br>Logistics</div>
+                            <div class="step1" id="stepIndicator3"><span>Step 3</span><br>Settings</div>
+                        </nav>
+
+                        <div class="form-step active" id="step1">
+                            <div class="form-body">
+                                <h2>1. Resources</h2>
+                                <p class="subtitle">Provide the basic details and reference materials for the activity.
+                                </p>
+
+                                <input type="text" id="titleInput" placeholder="Activity Title">
+                                <textarea id="descInput" placeholder="Instructions..." rows="6"></textarea>
+
+                                <label>Activity Deadline</label>
+                                <input type="datetime-local" id="dateInput">
+
+                                <div class="upload-box">
+                                    <p>📄 Upload PDF Manual</p>
+                                </div>
+
+                                <div class="btn-container">
+                                    <button class="next-btn" onclick="showStep(2)">NEXT →</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-step" id="step2">
+                            <div class="form-body">
+                                <div class="step-header">
+                                    <h2>2. Logistics</h2>
+                                    <button class="ai-suggest-btn">Suggest with AI</button>
+                                </div>
+                                <p class="subtitle">Select the required apparatus and materials for this activity.</p>
+
+                                <div class="search-container">
+                                    <div class="search-input-wrapper">
+                                        <span class="search-icon">🔍</span>
+                                        <input type="text" id="equipmentSearch" placeholder="Search items by name...">
+                                    </div>
+                                    <button class="filter-btn">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div class="equipment-grid" id="equipmentGrid"></div>
+
+                                <div class="btn-container flex-between">
+                                    <button class="prev-btn" onclick="showStep(1)">← PREVIOUS</button>
+                                    <button class="next-btn" onclick="showStep(3)">NEXT →</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-step" id="step3">
+                            <div class="form-body">
+                                <h2>3. Settings & Assignments</h2>
+                                <p class="subtitle">Define workflow logic and assign to classes.</p>
+
+                                <div class="field-container">
+                                    <label class="label-small-bold">ASSIGN CLASSES</label>
+                                    <div class="class-selector-box">
+                                        <input type="text" placeholder="Select classes...">
+                                    </div>
+                                </div>
+
+                                <div class="mode-section">
+                                    <label class="label-bold">Mode</label>
+                                    <div class="toggle-group">
+                                        <button type="button" class="toggle-btn active" id="modeIndividual"
+                                            onclick="setMode('individual')">INDIVIDUAL</button>
+                                        <button type="button" class="toggle-btn" id="modeGroup"
+                                            onclick="setMode('group')">GROUP</button>
+                                    </div>
+                                </div>
+
+                                <div id="groupSettings" style="display: none; margin-top: 20px;">
+                                    <div class="field-container">
+                                        <label class="label-small-blue">STRATEGY</label>
+                                        <select id="strategySelect">
+                                            <option value="smart">Smart Auto-Assign</option>
+                                            <option value="manual">Teacher Selects (Manual)</option>
+                                            <option value="choice">Student Choice</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field-container">
+                                        <label class="label-small-blue">GROUP LIMIT</label>
+                                        <input type="number" value="4" id="groupLimit">
+                                    </div>
+
+                                    <div class="group-preview-box">
+                                        <p>Select classes and set a group limit to see a preview.</p>
+                                    </div>
+                                </div>
+
+                                <div class="btn-container flex-between" style="margin-top: 40px;">
+                                    <button class="prev-btn" onclick="showStep(2)">← PREVIOUS</button>
+                                    <button class="publish-btn">PUBLISH ACTIVITY</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <aside class="preview-card">
+                        <div class="preview-tabs">
+                            <button class="active">Details</button>
+                            <button>Logistics</button>
+                            <button>Settings</button>
+                        </div>
+                        <div class="preview-content">
+                            <div class="pdf-placeholder">PDF PREVIEW</div>
+                            <p class="label-small" id="previewMode">INDIVIDUAL</p>
+                            <h3 id="previewTitle">Activity Title</h3>
+                            <div class="preview-desc-box">
+                                <p id="previewDesc">Description will appear here.</p>
+                            </div>
+                            <div class="deadline-footer">
+                                <span>Deadline:</span>
+                                <strong id="previewDate">Not set</strong>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
+            <div class="container" id="superBookingPage">
+                <div class="main-col">
+                    <header>
+                        <div class="titles">
+                            <h2>Manage <span>Bookings.</span></h2>
+                        </div>
+
+                    </header>
+
+                    <div class="card">
+                        <div class="form-group">
+                            <input type="text" id="search-box" placeholder="Search by Student or Item..."
+                                oninput="updateView()">
+                            <select id="sort-order" onchange="updateView()">
+                                <option value="desc">Newest First</option>
+                                <option value="asc">Oldest First</option>
+                            </select>
+                        </div>
+
+                        <div class="tab-group" id="tab-container">
+                            <div class="tab active" onclick="setFilter('All', this)">All</div>
+                            <div class="tab" onclick="setFilter('Pending', this)">Pending</div>
+                            <div class="tab" onclick="setFilter('Claimed', this)">Claimed</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 0; overflow: hidden;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student / Item</th>
+                                    <th>Scheduled Date</th>
+                                    <th style="text-align: center;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="card borrow">
-                    <h3>Borrowing Activity</h3>
-                    <p>Main</p><canvas id="borrowMain"></canvas>
+                <aside class="side-col">
+                    <div id="receipt-panel" class="receipt-card">
+                        <div id="empty-state" style="text-align: center; color: var(--text-muted); padding: 2rem;">Click
+                            a
+                            booking to view details.</div>
+                        <div id="details-content" style="display: none;">
+                            <h4 style="border-bottom: 2px solid #eee; padding-bottom: 1rem;">BOOKING RECEIPT</h4>
+                            <div style="font-size: 0.8rem; font-weight: bold; margin-top: 1rem;">
+                                <p>Item: <span id="d-item"></span></p>
+                                <p>Student: <span id="d-student"></span></p>
+                                <p>Date: <span id="d-date"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="container" id="handoverPage">
+                <div class="hand-main">
+                    <div class="hand-left">
+                        <header>
+                            <div class="title">
+                                <h2>Handover <span>Terminal</span></h2>
+                                <p>Review, approve, and process student apparatus requisitions.</p>
+                            </div>
+                            <button class="scan-btn2">📷 Scan Slip</button>
+                        </header>
+
+                        <div class="tabs2" id="tabs2"></div>
+
+                        <div class="filter3">
+                            <div>
+                                <label>Search by Student or Activity</label>
+                                <input id="searchBox" placeholder="e.g. John Doe or Titration">
+                            </div>
+                            <div>
+                                <label>Filter by Class</label>
+                                <select>
+                                    <option>All Classes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Sort by Date</label>
+                                <select id="sortSelect">
+                                    <option value="desc">Newest First</option>
+                                    <option value="asc">Oldest First</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="hand-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Activity</th>
+                                        <th>Items</th>
+                                        <th style="text-align:center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rows"></tbody>
+                            </table>
+
+                            <div class="pagination2">
+                                <button class="page-btn" id="prevBtn">Previous</button>
+                                <div id="pageInfo" style="font-weight:700;font-size:12px"></div>
+                                <button class="page-btn" id="nextBtn">Next</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <aside class="hand-right">
+                        <div class="receipt-empty" id="hand-empty">
+                            <h3>Select a Session</h3>
+                            <p>Click on a row to view its details here.</p>
+                        </div>
+                        <div class="hand-receipt" id="hand-receipt"></div>
+                    </aside>
                 </div>
-                <div class="card borrow">
-                    <h3>Borrow Status</h3>
-                    <p>Side</p><canvas id="borrowSide"></canvas>
+            </div>
+
+            <div class="container" id="settlementReviewPage">
+                <div class="settlement-container">
+
+                    <section class="main-content">
+
+                        <div class="title">
+                            <h2>Settlement <span>Reviews.</span></h2>
+                            <p>Review damaged items and payment proofs</p>
+                        </div>
+
+                         <div class="toggle-wrapper">
+                            <div class="tab active">All Student Cases</div>
+                            <div class="tab">My Personal Cases</div>
+                        </div>
+
+                         <div class="status-counters">
+                            <div class="counter pending">Pending: <span id="pending">0</span></div>
+                            <div class="counter approved">Approved: <span id="approved">0</span></div>
+                            <div class="counter rejected">Rejected: <span id="rejected">0</span></div>
+                        </div>
+
+                         <div class="filter-bar">
+                            <button data-filter="all" class="filter-btn active">All</button>
+                            <button data-filter="unresolved" class="filter-btn">Pending</button>
+                            <button data-filter="approved" class="filter-btn">Approved</button>
+                            <button data-filter="rejected" class="filter-btn">Rejected</button>
+                        </div>
+
+                         <div class="action-bar">
+                            <button id="addBtn" class="primary-btn">+ Add Case</button>
+                            <button id="deleteBtn" class="danger-btn">Delete</button>
+                        </div>
+
+                        <!-- TABLE -->
+                        <div class="table-card">
+                            <table class="cases-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Item</th>
+                                        <th>Damage</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="cases">
+
+                                    <tr data-status="unresolved">
+                                        <td>Admin User</td>
+                                        <td>Beaker</td>
+                                        <td>Broken (1)</td>
+                                        <td><span class="status-badge unresolved">Pending</span></td>
+                                    </tr>
+
+                                    <tr data-status="approved">
+                                        <td>Juan Dela Cruz</td>
+                                        <td>Test Tube</td>
+                                        <td>Cracked (2)</td>
+                                        <td><span class="status-badge approved">Approved</span></td>
+                                    </tr>
+
+                                    <tr data-status="rejected">
+                                        <td>Maria Santos</td>
+                                        <td>Flask</td>
+                                        <td>Chipped (1)</td>
+                                        <td><span class="status-badge rejected">Rejected</span></td>
+                                    </tr>
+
+                                    <tr data-status="unresolved">
+                                        <td>Carlos Reyes</td>
+                                        <td>Cylinder</td>
+                                        <td>Broken (3)</td>
+                                        <td><span class="status-badge unresolved">Pending</span></td>
+                                    </tr>
+
+                                    <tr data-status="approved">
+                                        <td>Angela Cruz</td>
+                                        <td>Pipette</td>
+                                        <td>Contaminated (5)</td>
+                                        <td><span class="status-badge approved">Approved</span></td>
+                                    </tr>
+
+                                    <tr data-status="rejected">
+                                        <td>Mark Bautista</td>
+                                        <td>Burette</td>
+                                        <td>Leaking (1)</td>
+                                        <td><span class="status-badge rejected">Rejected</span></td>
+                                    </tr>
+
+                                    <tr data-status="unresolved">
+                                        <td>Liza Fernandez</td>
+                                        <td>Watch Glass</td>
+                                        <td>Broken (4)</td>
+                                        <td><span class="status-badge unresolved">Pending</span></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </section>
+
+                    <aside class="sidebar">
+                        <div class="details-card">
+
+                            <div>
+                                <h3 id="itemTitle">Select a case</h3>
+                                <p>Reported by: <span id="user">-</span></p>
+                                <p>Damage: <strong id="damage">-</strong></p>
+                            </div>
+
+                            <div>
+                                <div class="action-buttons">
+                                    <button id="approveBtn" class="approve-btn">Approve</button>
+                                    <button id="rejectBtn" class="reject-btn">Reject</button>
+                                </div>
+                                <p class="waiting-state" id="statusText">Waiting for action</p>
+                            </div>
+
+                        </div>
+                    </aside>
+
                 </div>
 
-                <div class="card damage">
-                    <h3>Overall Damage Status</h3>
-                    <p>Main</p><canvas id="damageMain"></canvas>
+                <div id="formModal" class="modal3 hidden">
+                    <div class="modal-content">
+                        <h3>Add / Edit Case</h3>
+
+                        <input id="inputUser" placeholder="Student Name">
+                        <input id="inputItem" placeholder="Item">
+                        <input id="inputDamage" placeholder="Damage (e.g Broken (1))">
+
+                        <div class="modal-actions">
+                            <button id="saveBtn" class="primary-btn">Save</button>
+                            <button id="cancelBtn" class="danger-btn">Cancel</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="card damage">
-                    <h3>Unresolved Cases</h3>
-                    <p>Side</p><canvas id="damageSide"></canvas>
+            </div>
+
+            <div class="container" id="clearanceHubPage">
+
+                <div class="title">
+                    <h2>Student <span>Clearance Hub.</span></h2>
+                    <p>Verify student liabilities and clearance status.</p>
+                </div>
+
+                <div class="search-box">
+                    <form id="searchForm">
+                        <div class="input-wrap">
+                            <i class="fas fa-search"></i>
+                            <input type="search" placeholder="Enter Student ID Number...">
+                        </div>
+                        <button type="submit" class="btn-dark">Search</button>
+                        <button class="scan-btn2">📷 Scan Slip</button>
+                    </form>
+                </div>
+
+                <div id="cameraView" class="camera hidden">
+                    <div class="camera-header">
+                        <h3>Scan Student ID or Clearance Slip</h3>
+                        <button id="cancelScan">Cancel Scan</button>
+                    </div>
+                    <div class="qr-box">
+                        <div class="qr-guide"></div>
+                        <div class="laser"></div>
+                    </div>
+                    <p id="scanResult"></p>
+                </div>
+
+                <div class="results">
+                    <i class="fas fa-user-check"></i>
+                    <h3>Awaiting Student Search</h3>
+                    <p>Use the search bar or QR scanner to look up a student.</p>
+                </div>
+
+            </div>
+
+            <div class="container" id="classRegistryPage">
+
+                <div class="title">
+                    <h2>User & Class <span>Registry</span></h2>
+                    <p>Manage classes and students</p>
+                </div>
+
+                <div class="grid-1">
+                    <div class="class-search">
+                        <input id="classSearch" placeholder="Search classes..." oninput="filter()">
+                    </div>
+
+
+                    <div class="btn">
+                        <button class="btn btn-orange" onclick="openUser()">Register User</button>
+                        <button class="btn btn-orange" onclick="openClass()">Create Class</button>
+                    </div>
+                </div>
+
+
+
+                <div id="grid" class="class-grid"></div>
+
+                <div id="classActivityView" class="hidden">
+                    <h2 id="activityTitle"></h2>
+
+                    <div style="margin:20px 0;display:flex;gap:15px">
+                        <button onclick="openClearance()">Clearance Hub</button>
+                        <button onclick="openPostLab()">Post Lab Activity</button>
+                    </div>
+
+                    <div id="activityLogs"></div>
+                </div>
+
+                <div id="userModal" class="modal">
+                    <div class="box">
+                        <div class="class-header">
+                            <h3>User Registry</h3>
+                            <div class="x" onclick="closeUser()">×</div>
+                        </div>
+
+                        <form onsubmit="addUser(event)">
+                            <label class="label2">Role</label>
+                            <select>
+                                <option>Student</option>
+                                <option>Teacher</option>
+                                <option>LabTech</option>
+                                <option>Admin</option>
+                            </select>
+
+                            <label class="label2">ID</label>
+                            <input id="userId" class="input">
+                            <div id="errId" class="error-msg"></div>
+
+                            <label class="label2">First Name</label>
+                            <input id="first" class="input">
+                            <div id="errFirst" class="error-msg"></div>
+
+                            <label class="label2">Middle Name</label>
+                            <input class="input">
+
+                            <label class="label2">Last Name</label>
+                            <input id="last" class="input">
+                            <div id="errLast" class="error-msg"></div>
+
+                            <label class="label2">Email</label>
+                            <input id="email" class="input" type="email">
+                            <div id="errEmail" class="error-msg"></div>
+
+                            <button class="class-submit">Save User</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="classModal" class="modal">
+                    <div class="box">
+
+                        <div class="class-header">
+                            <h3>Create Class</h3>
+                            <div class="x" onclick="closeClass()">×</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <form onsubmit="addClass(event)">
+
+                                <div class="section">
+                                    <label class="label2">Assign Teacher</label>
+                                    <select id="teacher" class="input" required>
+                                        <option disabled selected>Select a teacher...</option>
+                                        <option value="101">Marie Curie</option>
+                                        <option value="102">Albert Einstein</option>
+                                        <option value="103">Isaac Newton</option>
+                                    </select>
+                                </div>
+
+                                <div class="section">
+                                    <label class="label2">Subject Name</label>
+                                    <input id="subject" class="input" required>
+                                </div>
+
+                                <div class="section">
+                                    <div>
+                                        <label class="label2">College</label>
+                                        <select id="college" class="input" onchange="loadPrograms()" required>
+                                            <option value="" disabled selected>Select College</option>
+                                            <option>CSM</option>
+                                            <option>COE</option>
+                                            <option>CCS</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="label2">Program / Course</label>
+                                        <select id="program" class="input" required>
+                                            <option value="" disabled selected>Select Program</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <div>
+                                        <label class="label2">Section</label>
+                                        <select id="section" class="input" required>
+                                            <option>A</option>
+                                            <option>B</option>
+                                            <option>C</option>
+                                            <option>D</option>
+                                            <option>E</option>
+                                        </select>
+
+                                    </div>
+
+                                    <div>
+                                        <label class="label2">Semester</label>
+                                        <select id="semester" class="input" required>
+                                            <option>1st Semester</option>
+                                            <option>2nd Semester</option>
+                                            <option>Summer</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button class="class-submit" type="submit">Create Class</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="deleteModal" class="modal">
+                    <div class="box">
+                        <div class="class-header">
+                            <h3>Delete</h3>
+                            <div class="x" onclick="closeDelete()">×</div>
+                        </div>
+
+                        <p><b>Are you sure you want to delete it?</b></p>
+
+                        <div class="confirm">
+                            <button class="cancel" onclick="closeDelete()">Cancel</button>
+                            <button class="del" onclick="confirmDelete()">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="studentModal" class="modal">
+                    <div class="box">
+                        <div class="class-header">
+                            <h3 id="classTitle">Add Student</h3>
+                            <div class="x" onclick="closeStudent()">×</div>
+                        </div>
+
+                        <form onsubmit="enroll(event)">
+                            <label class="label2">Student ID</label>
+                            <input id="studId" class="input">
+                            <div id="errid" class="error-msg"></div>
+
+                            <label class="label2">First Name</label>
+                            <input id="studFirst" class="input">
+                            <div id="errFirst" class="error-msg"></div>
+
+                            <label class="label2">Middle Name</label>
+                            <input class="input">
+
+                            <label class="label2">Last Name</label>
+                            <input id="studLast" class="input">
+                            <div id="errLast" class="error-msg"></div>
+
+                            <button class="class-submit" onclick="enroll()">Enroll</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container" id="viewActivityPage">
+                <main id="listView" class="viewAMain">
+
+                    <div class="title">
+                        <h1>General Chemistry 1 <span>Activities</span></h1>
+
+                        <div class="actions2">
+                            <button class="btn3 ghost" onclick="openClearance()">Clearance Hub</button>
+                            <button class="btn3 primary2" onclick="openPostLab()">Post New Lab</button>
+                        </div>
+                    </div>
+
+                    <div class="view-card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Deadline</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="activityTable"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="detailView" class="container hidden">
+                        <button class="back-btn" onclick="backToList()">← Back</button>
+
+                        <div class="detail-card">
+                            <h2 id="detailTitle"></h2>
+                            <p id="detailType"></p>
+                            <p id="detailDesc"></p>
+                            <p id="detailDeadline"></p>
+                        </div>
+                    </div>
+
+            </div>
+
+
+            <div class="container" id="masterListPage">
+
+                <header>
+                    <div class="title">
+                        <h2>Student <span>Masterlist.</span></h2>
+                        <p>Manage and view all registered students.</p>
+                    </div>
+                    <a class="btn2" onclick="RegisterStudent()">➕ Register Students</a>
+                </header>
+
+                <div class="filter-box">
+                    <div class="filter-grid">
+                        <div>
+                            <label class="label3">Search Student</label>
+                            <input type="search" id="search" placeholder="Search name or ID...">
+                        </div>
+
+                        <div>
+                            <label class="label3">Filter by College</label>
+                            <select id="college">
+                                <option value="">All Colleges</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="label3">Filter by Program</label>
+                            <select id="program" disabled>
+                                <option value="">All Programs</option>
+                            </select>
+                            <div class="note">* Select a college first to view programs.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-box">
+                    <div class="table-header">
+                        <h3 id="pageInfo">Masterlist Data</h3>
+                        <div class="records-badge" id="recordCount">0 Records Found</div>
+                    </div>
+
+                    <div class="class-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student Identity</th>
+                                    <th>College & Program</th>
+                                    <th>Year Level</th>
+                                    <th>Email</th>
+                                    <th class="account-status">Account Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <div class="per-page">
+                            Show:
+                            <select id="perPage">
+                                <option>10</option>
+                                <option>15</option>
+                                <option>25</option>
+                                <option>50</option>
+                            </select>
+                            per page
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="container hidden" id="enrollmentPage">
+
+                <header>
+                    <div class="title">
+                        <h2>Student <span>Enrollment.</span></h2>
+                        <p>Add new students to the masterlist and enroll them into programs.</p>
+                    </div>
+
+                    <button class="btn" onclick="BackToMasterList()">Back to Masterlist</button>
+                </header>
+
+                <div class="wizard">
+
+                    <div class="stepper">
+                        <div id="stepper1" class="active">Phase 1 — Identity</div>
+                        <div id="stepper2">Phase 2 — Academic</div>
+                        <div id="stepper3">Phase 3 — Review</div>
+                    </div>
+
+                    <div id="step1" class="step">
+                        <div class="stepper-grid">
+                            <div>
+                                <label>First Name</label>
+                                <input id="first">
+                                <div id="errFirst" class="error-msg"></div>
+                            </div>
+
+                            <div>
+                                <label>Last Name</label>
+                                <input id="last">
+                                <div id="errLast" class="error-msg"></div>
+                            </div>
+
+                            <div>
+                                <label>Middle Name</label>
+                                <input id="middle">
+                            </div>
+
+                            <div>
+                                <label>ID Number</label>
+                                <input id="idnum">
+                                <div id="errId" class="error-msg"></div>
+                            </div>
+
+                            <div>
+                                <label>Email</label>
+                                <input id="email">
+                                <div id="errEmail" class="error-msg"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="step2" class="step hidden">
+                        <div>
+                            <div class="grid-3">
+                                <div><label>College</label>
+                                    <select id="collegeS">
+                                        <option value="">All Colleges</option>
+                                    </select>
+                                </div>
+                                <div><label>Program</label>
+                                    <select id="programS" disabled>
+                                        <option value="">All Programs</option>
+                                    </select>
+
+                                    <div class="note">* Select a college first to view programs.</div>
+                                </div>
+
+                            </div>
+                            <div class="grid-3">
+                                <div>
+                                    <label>Year Level</label>
+                                    <select id="yearLevel">
+                                        <option value="" disabled selected>Select Year Level</option>
+                                        <option>1st Year</option>
+                                        <option>2nd Year</option>
+                                        <option>3rd Year</option>
+                                        <option>4th Year</option>
+                                        <option>5th Year</option>
+                                    </select>
+                                    <div id="errYear" class="error"></div>
+                                </div>
+
+                                <div>
+                                    <label>School Year</label>
+                                    <select id="schoolYear">
+                                        <option value="" disabled selected>Select School Year</option>
+                                        <option>2027-2028</option>
+                                        <option>2026-2027</option>
+                                        <option>2025-2026</option>
+                                        <option>2024-2025</option>
+                                    </select>
+                                    <div id="errSY" class="error"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div id="step3" class="step hidden">
+                        <div class="review" id="reviewBox"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn prev hidden" id="prev">Previous</button>
+                        <button class="btn next" id="next">Next</button>
+                        <button class="btn submit hidden" id="submit">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="container" id="registerItemPage">
+                <div class="title">
+                    <h2>Register <span>New Item.</span></h2>
+                </div>
+
+                <div class="stepper3">
+                    <div id="s1" class="active">Step 1<br>Details</div>
+                    <div id="s2">Step 2<br>Quantity</div>
+                    <div id="s3">Step 3<br>Codes</div>
+                    <div id="s4">Step 4<br>Finish</div>
+                </div>
+
+                <div class="grid1 grid-5">
+
+
+                    <div class="reg-card">
+
+
+                        <div class="step3 active" id="st1">
+                            <h3>Select Item Nature</h3>
+                            <div class="non-con">
+                                <div class="type-btn" id="btnNon">Non-Consumable</div>
+                                <div class="type-btn" id="btnCon">Consumable</div>
+                            </div>
+
+                            <label>Item Name</label>
+                            <input id="itemName">
+
+                            <label>Description</label>
+                            <textarea id="itemDesc"></textarea>
+
+                            <button class="btn btn-orange" onclick="nextStep()">Next →</button>
+                        </div>
+
+
+                        <div class="step3" id="st2">
+
+                            <div id="consumableFields" class="hidden">
+                                <label>Total Quantity</label>
+                                <input type="number" id="qty">
+
+                                <label>Price Per Unit</label>
+                                <input id="price">
+                            </div>
+
+                            <div id="nonConsumableFields" class="hidden">
+                                <label>Location</label>
+                                <input id="location">
+
+                                <label><input type="checkbox" id="isScalable"> Item has multiple sizes</label>
+
+                                <div id="variantSection" class="hidden">
+                                    <div id="variants"></div>
+                                    <button class="btn btn-gray" onclick="addVariant()">+ Add Size</button>
+                                </div>
+                            </div>
+
+                            <br>
+                            <button class="btn btn-gray" onclick="prevStep()">← Prev</button>
+                            <button class="btn btn-orange" onclick="nextStep()">Next →</button>
+                        </div>
+
+                        <div class="step3" id="st3">
+                            <button class="btn btn-blue" onclick="generateCodes()">Generate Item Codes</button>
+                            <div id="codesBox" class="codeBox"></div>
+                            <br>
+                            <button class="btn btn-gray" onclick="prevStep()">← Prev</button>
+                            <button class="btn btn-orange" onclick="nextStep()">Next →</button>
+                        </div>
+
+
+                        <div class="step3" id="st4">
+                            <label>Upload Image</label>
+                            <input type="file" id="imgInput" accept="image/*">
+
+                            <br><br>
+                            <button class="btn btn-gray" onclick="prevStep()">← Prev</button>
+                            <button class="btn btn-green">Register Item</button>
+                        </div>
+
+                    </div>
+
+                    <div class="card preview-box">
+                        <div id="previewImg" class="preview-img"></div>
+                        <h3 id="pName">Item Name</h3>
+                        <p id="pDesc">Description</p>
+                        <p><b>Qty:</b> <span id="pQty">0</span></p>
+                        <p><b>Price:</b> <span id="pPrice">0</span></p>
+                        <p><b>Location:</b> <span id="pLoc">N/A</span></p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="container" id="userMnmtPage">
+                <div>
+                    <header class="header">
+                        <div class="title">
+                            <h2>
+                                User <span>Management.</span>
+                            </h2>
+
+                            <p>
+                                Add, view, and manage Teacher and Admin accounts.
+                            </p>
+                        </div>
+
+                        <button class="add-btn" onclick="openAddModal()">
+                            Add New User
+                        </button>
+                    </header>
+
+
+                    <div class="mnmt-card">
+                        <div class="class-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Contact</th>
+                                        <th class="account-status">Account Status</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="userTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+
+                <div class="modal2" id="addModal">
+
+                    <div class="modal-header">
+                        <button class="close-btn" onclick="closeAllModals()">×</button>
+
+                        <h3 class="modal-title">Register New User</h3>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="grid-4">
+
+                            <div class="group2">
+                                <div class="label4">Role</div>
+
+                                <select class="input2" id="role">
+                                    <option>Teacher</option>
+                                    <option>LabTech</option>
+                                    <option>Admin</option>
+                                </select>
+                            </div>
+
+                            <div class="group2">
+                                <div class="label4">ID Number</div>
+
+                                <input class="input2" id="id">
+
+                                <div class="error=msg" id="e_id"></div>
+                            </div>
+
+                            <div class="group2">
+                                <div class="label4">First Name</div>
+
+                                <input class="input2" id="first">
+
+                                <div class="error-msg" id="e_first"></div>
+                            </div>
+
+                            <div class="group2">
+                                <div class="label4">Middle Name</div>
+
+                                <input class="input2" id="middle">
+                            </div>
+
+                            <div class="group2 full">
+                                <div class="label4">Last Name</div>
+
+                                <input class="input2" id="last">
+
+                                <div class="error-msg" id="e_last"></div>
+                            </div>
+
+                            <div class="group2 full">
+                                <div class="label4">Official Email</div>
+
+                                <input class="input2" id="email">
+
+                                <div class="error-msg" id="e_email"></div>
+                            </div>
+
+                            <div class="group2 full">
+                                <button class="submit-btn" onclick="addUser()">
+                                    Add to Masterlist
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal2" id="logModal">
+
+                    <div class="modal-header">
+
+                        <button class="close-btn" onclick="closeAllModals()">×</button>
+
+                        <h3 class="modal-title" id="logUserName">
+                            System Logs
+                        </h3>
+
+                        <p class="modal-sub" id="logUserID"></p>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="filter">
+                            <label>Filter by School Year:</label>
+
+                            <select>
+                                <option>2025-2026</option>
+                                <option>2024-2025</option>
+                            </select>
+                        </div>
+
+                        <div class="logs" id="logsContainer"></div>
+
+                    </div>
                 </div>
 
             </div>
 
         </div>
     </div>
+
+
 
     <script src="../../assets/JS/dashboard.js"></script>
 

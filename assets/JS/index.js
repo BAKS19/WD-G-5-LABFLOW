@@ -48,26 +48,30 @@ const closeBtn = document.getElementById("closeBtn");
 
 const idStep = document.getElementById("id-modal");
 const passStep = document.getElementById("pass-modal");
+const emailStep = document.getElementById("email-modal");
 
 const verifyForm = document.getElementById("verifyForm");
 const adminForm = document.getElementById("adminLoginForm");
+const emailForm = document.getElementById("emailForm");
 
 const idInput = document.getElementById("id_number");
 const passwordInput = document.getElementById("password");
+const emailInput = document.getElementById("email");
 
 const idError = document.getElementById("idError");
 const passError = document.getElementById("passError");
+const emailError = document.getElementById("emailError");
 
 const togglePassword = document.getElementById("togglePassword");
 const switchAccount = document.getElementById("switchAccount");
+const forgotPassword = document.getElementById("forgotPassword");
+const backToLogin = document.getElementById("backToLogin");
 
 let currentUser = "";
 
-if (openBtn) {
-    openBtn.addEventListener("click", () => {
-        modal.classList.add("active");
-    });
-}
+if (openBtn) openBtn.onclick = () => modal.classList.add("active");
+if (overlay) overlay.onclick = closeModal;
+if (closeBtn) closeBtn.onclick = closeModal;
 
 function closeModal() {
     modal.classList.remove("active");
@@ -77,22 +81,20 @@ function closeModal() {
 function resetAll() {
     idStep.classList.remove("hidden");
     passStep.classList.add("hidden");
+    emailStep.classList.add("hidden");
 
     idInput.value = "";
     passwordInput.value = "";
+    emailInput.value = "";
+
     idError.textContent = "";
     passError.textContent = "";
+    emailError.textContent = "";
 
     currentUser = "";
 }
 
-
-if (overlay) overlay.addEventListener("click", closeModal);
-if (closeBtn) closeBtn.addEventListener("click", closeModal);
-
-
-
-verifyForm.addEventListener("submit", function (e) {
+verifyForm.onsubmit = (e) => {
     e.preventDefault();
 
     const id = idInput.value.trim();
@@ -103,34 +105,29 @@ verifyForm.addEventListener("submit", function (e) {
         return;
     }
 
-    resetAll();
-
     if (id === "1") {
         currentUser = "admin";
-        document.getElementById("roleLabel").textContent = "Admin User";
-        passStep.classList.remove("hidden");
-        idStep.classList.add("hidden");
+        roleLabel.textContent = "Admin User";
     }
     else if (id === "202403655") {
         currentUser = "student";
-        document.getElementById("roleLabel").textContent = "Mark John Ando";
-        passStep.classList.remove("hidden");
-        idStep.classList.add("hidden");
+        roleLabel.textContent = "Mark John Ando";
     }
     else if (id === "1002") {
         currentUser = "teacher";
-        document.getElementById("roleLabel").textContent = "Jaydee Ballaho";
-        passStep.classList.remove("hidden");
-        idStep.classList.add("hidden");
+        roleLabel.textContent = "Jaydee Ballaho";
     }
     else {
         idError.textContent = "ID not verified.";
+        return;
     }
-});
 
-document.addEventListener("submit", function (e) {
-    if (e.target.id !== "adminLoginForm") return;
+    idStep.classList.add("hidden");
+    passStep.classList.remove("hidden");
+};
 
+
+adminForm.onsubmit = (e) => {
     e.preventDefault();
 
     const password = passwordInput.value.trim();
@@ -154,43 +151,89 @@ document.addEventListener("submit", function (e) {
         passError.textContent = "Incorrect password.";
         passwordInput.value = "";
     }
-});
+};
 
-if (togglePassword) {
-    togglePassword.addEventListener("click", () => {
-        passwordInput.type =
-            passwordInput.type === "password" ? "text" : "password";
-    });
+
+togglePassword.onclick = () => {
+    passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
+};
+
+
+switchAccount.onclick = (e) => {
+    e.preventDefault();
+    resetAll();
+};
+
+
+forgotPassword.onclick = (e) => {
+    e.preventDefault();
+    passStep.classList.add("hidden");
+    emailStep.classList.remove("hidden");
+};
+
+backToLogin.onclick = (e) => {
+    e.preventDefault();
+    emailStep.classList.add("hidden");
+    passStep.classList.remove("hidden");
+};
+
+
+emailForm.onsubmit = (e) => {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    emailError.textContent = "";
+
+    if (email === "") {
+        emailError.textContent = "Please enter your email.";
+        return;
+    }
+
+    if (!email.includes("@")) {
+        emailError.textContent = "Invalid email format.";
+        return;
+    }
+
+    alert("Verification link sent to " + email);
+
+    emailStep.classList.add("hidden");
+    passStep.classList.remove("hidden");
+};
+
+function toggleLegalModal(show){
+    document.getElementById('legalModal').classList.toggle('active', show);
 }
 
-if (switchAccount) {
-    switchAccount.addEventListener("click", function (e) {
-        e.preventDefault();
-        resetAll();
-    });
+function switchTab(tab){
+    const terms2 = document.getElementById('terms2');
+    const privacy2 = document.getElementById('privacy2');
+    const indicator2 = document.getElementById('indicator2');
+
+    const btnTerms = document.getElementById('btn-terms');
+    const btnPrivacy = document.getElementById('btn-privacy');
+
+    if(tab === 'terms2'){
+        terms2.classList.remove('hidden');
+        privacy2.classList.add('hidden');
+
+        btnTerms.classList.add('active');
+        btnTerms.classList.remove('inactive');
+
+        btnPrivacy.classList.add('inactive');
+        btnPrivacy.classList.remove('active');
+
+        indicator.style.left = '6px';
+    } else {
+        terms2.classList.add('hidden');
+        privacy2.classList.remove('hidden');
+
+        btnPrivacy.classList.add('active');
+        btnPrivacy.classList.remove('inactive');
+
+        btnTerms.classList.add('inactive');
+        btnTerms.classList.remove('active');
+
+        indicator.style.left = 'calc(50% + 0px)';
+    }
 }
-
-
-
-
-
-/*STUDENT*/
-function showReceipt(data) {
-
-    document.getElementById("empty").style.display = "none";
-    document.getElementById("receipt").style.display = "block";
-
-    document.getElementById("r-title").innerText = data.title;
-    document.getElementById("r-date").innerText = "Date: " + data.date;
-    document.getElementById("r-status").innerText = "Status: " + data.status;
-    document.getElementById("r-remarks").innerText = "Remarks: " + (data.remarks || "None");
-
-    let itemsHTML = "";
-    data.items.forEach(i => {
-        itemsHTML += `<div class="item">${i.name} - Qty: ${i.qty}</div>`;
-    });
-
-    document.getElementById("r-items").innerHTML = itemsHTML;
-}
-
-
